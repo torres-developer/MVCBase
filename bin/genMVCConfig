@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . "/../vendor/autoload.php";
+
+$pds = new \Pds\Skeleton\Console();
+
+if (!$pds->execute([null, "generate", __DIR__ . "/../../../../../"])) exit(1);
+
+if (!copy(
+    __DIR__ . "/../resources/config/config.php",
+    __DIR__ . "/../../../config/"
+) || !copy(
+    __DIR__ . "/../resources/config/databaseConfig.php",
+    __DIR__ . "/../../../config/"
+) || !copy(
+    __DIR__ . "/../resources/public/index.php",
+    __DIR__ . "/../../../public/"
+)) exit(1);
+
+exit(0);
+

@@ -1,0 +1,115 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "0344425fb06bddd20327424648335a5d",
+    "packages": [
+        {
+            "name": "torres-developer/pdo",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/torres-developer/PDOWrapperAPI.git",
+                "reference": "c067a77de8711e1c961b4b142cb4cd140617e93e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/torres-developer/PDOWrapperAPI/zipball/c067a77de8711e1c961b4b142cb4cd140617e93e",
+                "reference": "c067a77de8711e1c961b4b142cb4cd140617e93e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pdo": "*",
+                "php": ">=8.1.11"
+            },
+            "require-dev": {
+                "pds/skeleton": "^1.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "TorresDeveloper\\PdoWrapperAPI\\": "src/",
+                    "TorresDeveloper\\PdoWrapperAPI\\Core\\": "src/core"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "AGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "torres-developer",
+                    "email": "torres.dev@disroot.org",
+                    "homepage": "https://github.com/torres-developer",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PDO wrapper API",
+            "homepage": "https://github.com/torres-developer/PDOWrapperAPI",
+            "keywords": [
+                "database",
+                "mysql",
+                "pdo",
+                "wrapper"
+            ],
+            "support": {
+                "issues": "https://github.com/torres-developer/PDOWrapperAPI/issues",
+                "source": "https://github.com/torres-developer/PDOWrapperAPI/"
+            },
+            "time": "2022-10-16T00:00:00+00:00"
+        }
+    ],
+    "packages-dev": [
+        {
+            "name": "pds/skeleton",
+            "version": "1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-pds/skeleton.git",
+                "reference": "75afe0c74131620b18239174bc67d6229bea273a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-pds/skeleton/zipball/75afe0c74131620b18239174bc67d6229bea273a",
+                "reference": "75afe0c74131620b18239174bc67d6229bea273a",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "bin": [
+                "bin/pds-skeleton"
+            ],
+            "type": "standard",
+            "autoload": {
+                "psr-4": {
+                    "Pds\\Skeleton\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "CC-BY-SA-4.0"
+            ],
+            "description": "Standard for PHP package skeletons.",
+            "homepage": "https://github.com/php-pds/skeleton",
+            "support": {
+                "issues": "https://github.com/php-pds/skeleton/issues",
+                "source": "https://github.com/php-pds/skeleton/tree/1.x"
+            },
+            "time": "2017-09-11T21:05:23+00:00"
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "torres-developer/pdo": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.1.11"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
+}
