@@ -47,11 +47,11 @@ foreach ($files as $file) {
 
     if (is_file($path))
         if (rename($path, "$path.bak"))
-            echo "Backup created at $path.bak" . PHP_EOL;
+            echo "Backup created at $file.php.bak" . PHP_EOL;
         else
             exit(1);
 
-    if (!copy("$thisResources$file.php", "$projectRoot$file.php")) exit(1); 
+    if (!copy("$thisResources$file.php", $path)) exit(1); 
 }
 
 exit(0);
