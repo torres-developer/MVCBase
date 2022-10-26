@@ -43,7 +43,13 @@ $files = [
 ];
 
 foreach ($files as $file) {
-    if (is_file("$projectRoot$file.php")) continue;
+    $path = "$projectRoot$file.php";
+
+    if (is_file($path))
+        if (rename($path, "$path.bak"))
+            echo "Backup created at $path.bak" . PHP_EOL;
+        else
+            exit(1);
 
     if (!copy("$thisResources$file.php", "$projectRoot$file.php")) exit(1); 
 }
