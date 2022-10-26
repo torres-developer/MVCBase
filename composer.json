@@ -1,0 +1,43 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "torres-developer/mvc",
+    "description": "MVC base",
+    "type": "library",
+    "keywords": [
+	    "MVC"
+    ],
+    "homepage": "https://github.com/torres-developer/MVCBase",
+    "readme": "./README.md",
+    "time": "2022-10-26",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "torres-developer",
+            "email": "torres.dev@disroot.org",
+	    "homepage": "https://github.com/torres-developer",
+	    "role": "Developer"
+        }
+    ],
+    "support": {
+	"issues": "https://github.com/torres-developer/MVCBase/issues",
+	"source": "https://github.com/torres-developer/MVCBase/"
+    },
+    "require": {
+	"php": ">=8.1.11"
+    },
+    "require-dev": {
+        "pds/skeleton": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TorresDeveloper\\MVC\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "repositories": [
+	{
+	    "type": "vcs",
+	    "url": "https://github.com/torres-developer/MVCBase"
+	}
+    ]
+}
