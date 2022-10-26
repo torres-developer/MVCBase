@@ -42,5 +42,5 @@
 	    "url": "https://github.com/torres-developer/MVCBase"
 	}
     ],
-    "bin": ["bin/genMVCConfig"]
+    "bin": ["bin/genBase"]
 }

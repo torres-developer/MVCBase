@@ -9,13 +9,13 @@ if (!$pds->execute([null, "generate", __DIR__ . "/../../../../"])) exit(1);
 
 if (!copy(
     __DIR__ . "/../resources/config/config.php",
-    __DIR__ . "/../../../config/"
+    __DIR__ . "/../../../config/config.php"
 ) || !copy(
     __DIR__ . "/../resources/config/databaseConfig.php",
-    __DIR__ . "/../../../config/"
+    __DIR__ . "/../../../config/databaseConfig.php"
 ) || !copy(
     __DIR__ . "/../resources/public/index.php",
-    __DIR__ . "/../../../public/"
+    __DIR__ . "/../../../public/index.php"
 )) exit(1);
 
 exit(0);
