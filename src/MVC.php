@@ -70,6 +70,11 @@ final class MVC
             $this->request->getBody()
         );
 
+        $this->deploy();
+    }
+
+    public function deploy(): void
+    {
         $action = $this->request->getAction();
 
         if (!method_exists($this->controller, $action)) {
@@ -83,11 +88,6 @@ final class MVC
             http_response_code(404);
             exit($e);
         }
-    }
-
-    public function deploy(): void
-    {
-        $this->request;
     }
 }
 
