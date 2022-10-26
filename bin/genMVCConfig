@@ -5,7 +5,7 @@ require __DIR__ . "/../../../autoload.php";
 
 $pds = new \Pds\Skeleton\Console();
 
-if (!$pds->execute([null, "generate", __DIR__ . "/../../../../../"])) exit(1);
+if (!$pds->execute([null, "generate", __DIR__ . "/../../../../"])) exit(1);
 
 if (!copy(
     __DIR__ . "/../resources/config/config.php",
