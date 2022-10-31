@@ -48,12 +48,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/torres-developer/PDOWrapperAPI.git",
-                "reference": "c067a77de8711e1c961b4b142cb4cd140617e93e"
+                "reference": "14c2aef532879de0ecbde8a07c8190682c1880dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/torres-developer/PDOWrapperAPI/zipball/c067a77de8711e1c961b4b142cb4cd140617e93e",
-                "reference": "c067a77de8711e1c961b4b142cb4cd140617e93e",
+                "url": "https://api.github.com/repos/torres-developer/PDOWrapperAPI/zipball/14c2aef532879de0ecbde8a07c8190682c1880dd",
+                "reference": "14c2aef532879de0ecbde8a07c8190682c1880dd",
                 "shasum": ""
             },
             "require": {

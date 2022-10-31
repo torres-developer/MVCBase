@@ -29,11 +29,17 @@
 
 namespace TorresDeveloper\MVC;
 
+use TorresDeveloper\PdoWrapperAPI\{
+    MySQLPDO,
+    Core\PDODataSourceName,
+    Core\PDOCredentials
+};
+
 final class MVC
 {
     private Request $request;
 
-    private \TorresDeveloper\PdoWrapperAPI\PDO $dbh;
+    private MySQLPDO $dbh;
 
     public string $controllersNS;
 
@@ -49,12 +55,14 @@ final class MVC
             file_get_contents("php://input")
         );
 
-        $this->dbh = \TorresDeveloper\PdoWrapperAPI\PDO::getInstance(
-            DB_HOST,
-            DB_NAME,
-            DB_CHARSET,
-            DB_USERNAME,
-            DB_PASSWORD
+        $this->dbh = MySQLPDO::getInstance(
+            new PDODataSourceName([
+                "host" => DB_HOST,
+                "database" => DB_NAME
+            ], new PDOCredentials(
+                DB_USERNAME,
+                DB_PASSWORD
+            ))
         );
 
         $controller = "$this->controllersNS\\{$this->request->getController()}";
@@ -67,7 +75,8 @@ final class MVC
         $this->controller = new $controller(
             $this->request->getParameters(),
             $this->request->getMethod(),
-            $this->request->getBody()
+            $this->request->getBody(),
+            $this->dbh
         );
 
         $this->deploy();
