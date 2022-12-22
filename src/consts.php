@@ -5,7 +5,7 @@ namespace TorresDeveloper\MVC;
 defined("ROOT") OR exit(1);
 
 /**
- * @var string EMAIL_REGEX A regular expression for e-mails.
+ * @var string A regular expression for e-mails.
  *
  * @link https://emailregex.com/index.html
  */

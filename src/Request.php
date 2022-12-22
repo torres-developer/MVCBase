@@ -6,7 +6,10 @@
 
 namespace TorresDeveloper\MVC;
 
-final class Request
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\UriInterface;
+
+final class Request implements RequestInterface
 {
     private string $controller;
     private string $action;
@@ -25,6 +28,48 @@ final class Request
 
         $this->calcInput($resource);
         $this->calcBody($body);
+    }
+
+    public function getRequestTarget(): string
+    {
+        return "";
+    }
+
+    public function withRequestTarget($requestTarget): static
+    {
+        return $this;
+    }
+
+    public function getMethod(): string
+    {
+        return (string) $this->method;
+    }
+
+    public function withMethod($method): static
+    {
+        if (!is_string($method)) {
+            throw new \InvalidArgumentException();
+        }
+
+        try {
+            $this->method = HTTPVerb::from($method);
+        } catch (\ValueError $e) {
+            throw new \InvalidArgumentException(previous: $e);
+        }
+
+        return $this;
+    }
+
+    public function getUri(): UriInterface
+    {
+        return new URI("");
+    }
+
+    public function withMethodHTTPVerb(HTTPVerb $method): static
+    {
+        $this->method = $method;
+
+        return $this;
     }
 
     private function calcInput(?string $path): void
@@ -73,7 +118,7 @@ final class Request
         return $this->parameters;
     }
 
-    public function getMethod(): HTTPVerb
+    public function getMethodHTTPVerb(): HTTPVerb
     {
         return $this->method;
     }
