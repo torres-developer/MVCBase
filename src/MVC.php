@@ -85,10 +85,10 @@ final class MVC
             exit;
         }
 
-        $this->deploy($controller);
+        $this->deploy($controller, new Response());
     }
 
-    public function deploy(string $controller): void
+    public function deploy(string $controller, Response $response): Response
     {
         $class = new \ReflectionClass($controller::class);
 
@@ -117,8 +117,10 @@ final class MVC
         }
 
         if ($returnType === Controller::class) {
-            return $this->deploy((new $controller())
-                ->{$action}($this->request->getParameters())::class
+            return $this->deploy(
+                (new $controller())
+                    ->{$action}($response, $this->request->getParameters())::class,
+                $response
             );
         }
 
@@ -130,7 +132,7 @@ final class MVC
 
         try {
             (new $controller(array_pop($db)->newInstance()->getProxy()))
-                ->{$action}($this->request->getParameters());
+                ->{$action}($response, $this->request->getParameters());
         } catch (\Error $e) {
             http_response_code(404);
             exit($e);
