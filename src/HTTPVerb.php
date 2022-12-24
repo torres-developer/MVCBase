@@ -11,5 +11,10 @@ enum HTTPVerb: string {
     case DELETE = "DELETE";
     case TRACE = "TRACE";
     case CONNECT = "CONNECT";
+
+    public function __toString()
+    {
+        return $this->value;
+    }
 }
 

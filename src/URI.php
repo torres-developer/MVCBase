@@ -29,10 +29,6 @@
 
 namespace TorresDeveloper\MVC;
 
-define("ROOT", true);
-require_once "../vendor/psr/http-message/src/UriInterface.php";
-require_once "./consts.php";
-
 use Psr\Http\Message\UriInterface;
 
 final class URI implements UriInterface
@@ -49,14 +45,14 @@ final class URI implements UriInterface
         "https" => [443],
     ];
 
-    private string $scheme;
+    private ?string $scheme;
     private ?string $user;
     private ?string $password;
-    private string $host;
+    private ?string $host;
     private ?int $port;
     private string $path;
-    private string $query;
-    private string $fragment;
+    private ?string $query;
+    private ?string $fragment;
 
     public function __construct(string $uri)
     {
@@ -66,35 +62,29 @@ final class URI implements UriInterface
             throw new \DomainException();
         }
 
-        [
-            "scheme" => $scheme,
-            "user" => $user,
-            "pass" => $password,
-            "host" => $host,
-            "port" => $port,
-            "path" => $path,
-            "query" => $query,
-            "fragment" => $fragment,
-        ] = parse_url($uri);
+        $matches = parse_url($uri);
 
-        $this->scheme = $scheme;
-        $this->user = $user;
-        $this->password = $password;
-        $this->host = $host;
-        $this->port = $port;
-        $this->path = $path;
+        $this->scheme = $matches["scheme"] ?? null;
+        $this->user = $matches["user"] ?? null;
+        $this->password = $matches["password"] ?? null;
+        $this->host = $matches["host"] ?? null;
+        $this->port = $matches["port"] ?? null;
+        $this->path = $matches["path"] ?? null;
+        $this->query = $matches["query"] ?? null;
+        $this->fragment = $matches["fragment"] ?? null;
+        echo $uri . "\t" . (string) strcmp($uri, $this->__toString()) . PHP_EOL;
     }
 
     public function getScheme(): string
     {
-        return strtolower($scheme ?? "");
+        return strtolower($this->scheme ?? "");
     }
 
     public function getAuthority(): string
     {
-        return (($userInfo = $this->getUserInfo()) === null ? "" : "$userInfo@")
+        return (($userInfo = $this->getUserInfo()) ? "$userInfo@" : "")
             . $this->getHost()
-            . (($port = $this->getPort()) === null ? "" : ":$port");
+            . ((($port = $this->getPort()) === null) ? "" : ":$port");
     }
 
     public function getUserInfo(): string
@@ -106,33 +96,50 @@ final class URI implements UriInterface
 
     public function getHost(): string
     {
-        return strtolower($host ?? "");
+        return strtolower($this->host ?? "");
     }
 
     public function getPort(): ?int
     {
-        if (URI::DEFAULT_PORTS[$this->scheme] === null) {
+        $scheme = $this->getScheme();
+
+        if ((URI::DEFAULT_PORTS[$scheme] ?? null) === null) {
             return $this->port;
         }
 
-        return in_array($this->port, URI::DEFAULT_PORTS[$this->scheme])
+        return in_array($this->port, URI::DEFAULT_PORTS[$scheme])
             ? null
             : $this->port;
     }
 
     public function getPath(): string
     {
-        return urlencode($this->path);
+        return ($this->path ?? "");
     }
 
     public function getQuery(): string
     {
-        return "";
+        return ($this->query ?? "");
     }
 
     public function getFragment(): string
     {
-        return "";
+        return ($this->fragment ?? "");
+    }
+
+    public function getOriginForm(): string
+    {
+        $path = $this->getPath();
+        $authority = $this->getAuthority();
+
+        return ((preg_match(
+            "/^(:?[\w\d\-\.~]|(%[[:xdigit]]{2})|[!$&'\(\)\*\+,;=]|:|@)/",
+            $path
+        ) && $authority) ? "/$path" : ((preg_match(
+            "/^\/+/",
+            $path
+        ) && !$authority) ? ("/" . ltrim($path, "/")) : $path))
+        . (($query = $this->getQuery()) ? "?$query" : "");
     }
 
     public function withScheme($scheme): static
@@ -142,7 +149,7 @@ final class URI implements UriInterface
         }
 
         $uri = clone $this;
-        $uri->scheme = $scheme;
+        $uri->scheme = $scheme ?: null;
 
         return $uri;
     }
@@ -157,10 +164,11 @@ final class URI implements UriInterface
             throw new \InvalidArgumentException();
         }
 
-        $this->user = $user;
-        $this->password = $password;
+        $uri = clone $this;
+        $uri->user = $user ?: null;
+        $uri->password = $password ?: null;
 
-        return $this;
+        return $uri;
     }
 
     public function withHost($host): static
@@ -169,9 +177,10 @@ final class URI implements UriInterface
             throw new \InvalidArgumentException();
         }
 
-        $this->host = $host;
+        $uri = clone $this;
+        $uri->host = $host ?: null;
 
-        return $this;
+        return $uri;
     }
 
     public function withPort($port): static
@@ -180,9 +189,15 @@ final class URI implements UriInterface
             throw new \InvalidArgumentException();
         }
 
-        $this->port = $port;
+        // port -> unsigned 16 bit int
+        if(is_int($port) && ($port < 0 || $port > 0xffff)) {
+            throw new \InvalidArgumentException();
+        }
 
-        return $this;
+        $uri = clone $this;
+        $uri->port = $port;
+
+        return $uri;
     }
 
     public function withPath($path): static
@@ -190,10 +205,11 @@ final class URI implements UriInterface
         if (!is_string($path)) {
             throw new \InvalidArgumentException();
         }
-        
-        $this->path = $path;
 
-        return $this;
+        $uri = clone $this;
+        $uri->path = $path;
+
+        return $uri;
     }
 
     public function withQuery($query): static
@@ -201,10 +217,11 @@ final class URI implements UriInterface
         if (!is_string($query)) {
             throw new \InvalidArgumentException();
         }
-        
-        $this->query = $query;
 
-        return $this;
+        $uri = clone $this;
+        $uri->query = $query ?: null;
+
+        return $uri;
     }
 
     public function withFragment($fragment): static
@@ -213,24 +230,26 @@ final class URI implements UriInterface
             throw new \InvalidArgumentException();
         }
         
-        $this->fragment = $fragment;
+        $uri = clone $this;
+        $uri->fragment = $fragment ?: null;
 
-        return $this;
+        return $uri;
     }
 
     public function __toString()
     {
-        return "";
+        $path = $this->getPath();
+
+        return (($scheme = $this->getScheme()) ? "$scheme:" : "")
+            . (($authority = $this->getAuthority()) ? "//$authority" : "")
+            . ((preg_match(
+                "/^(:?[\w\d\-\.~]|(%[[:xdigit]]{2})|[!$&'\(\)\*\+,;=]|:|@)/",
+                $path
+            ) && $authority) ? "/$path" : ((preg_match(
+                "/^\/+/",
+                $path
+            ) && !$authority) ? ("/" . ltrim($path, "/")) : $path))
+            . (($query = $this->getQuery()) ? "?$query" : "")
+            . (($fragment = $this->getFragment()) ? "#$fragment" : "");
     }
 }
-
-new URI("https://example.org/");
-new URI("http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
-new URI("ftp://ftp.is.co.za/rfc/rfc1808.txt");
-new URI("http://www.ietf.org/rfc/rfc2396.txt");
-new URI("ldap://[2001:db8::7]/c=GB?objectClass?one");
-//new URI("mailto:John.Doe@example.com");
-//new URI("news:comp.infosystems.www.servers.unix");
-//new URI("tel:+1-816-555-1212");
-new URI("telnet://192.0.2.16:80/");
-//new URI("urn:oasis:names:specification:docbook:dtd:xml:4.1.2");

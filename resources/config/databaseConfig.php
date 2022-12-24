@@ -10,28 +10,28 @@
  * Database configuration
  */
 
-/**
- * @var string DB_HOST The host of your database (exmaple 127.0.0.1).
- */
-define("DB_HOST", "");
+use TorresDeveloper\PdoWrapperAPI\Core\DataSourceName;
+use TorresDeveloper\PdoWrapperAPI\Core\Credentials;
+use TorresDeveloper\PdoWrapperAPI\MysqlConnection;
 
-/**
- * @var string DB_NAME Name of the database.
- */
-define("DB_NAME", "");
+$user = "";
+$password = "";
+$credentials = Credentials::getCredentials($user, $password);
 
-/**
- * @var string DB_USERNAME Username of the user to use the database.
- */
-define("DB_USERNAME", "");
-
-/**
- * @var string DB_PASSWORD Password of the user.
- */
-define("DB_PASSWORD", "");
-
-/**
- * @var string DB_CHARSET charset to use on the database connection
- */
-define("DB_CHARSET", "utf8mb4");
-
+return [
+    DEFAULT_DB => [
+        "class" => MysqlConnection::class,
+        "dsn" => new DataSourceName([
+            "host" => "",
+            "database" => "",
+            "charset" => "utf8mb4"
+        ], $credentials)
+    ],
+    "otherDB" => [
+        "class" => MysqlConnection::class,
+        "dsn" => new DataSourceName([
+            "host" => "example.org",
+            "database" => "topSecret"
+        ], $credentials)
+    ]
+];

@@ -31,7 +31,8 @@ define("PUBLIC", ROOT . "/public");
  */
 define("URI", "http://{$_SERVER["HTTP_HOST"]}/");
 
-require_once __DIR__ . "/databaseConfig.php";
+define("DB_CONF", __DIR__ . "/databaseConfig.php");
+define("DEFAULT_DB", "default");
 
 /**
  * @var bool DEBUG true to show errors, notices, warnings.

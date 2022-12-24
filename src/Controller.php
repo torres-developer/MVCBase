@@ -8,6 +8,11 @@ declare(strict_types=1);
 
 namespace TorresDeveloper\MVC;
 
+use TorresDeveloper\PdoWrapperAPI\Core\{
+    AbstractQueryBuilder,
+    Connection
+};
+
 /**
  * Controller
  *
@@ -18,4 +23,19 @@ namespace TorresDeveloper\MVC;
  */
 abstract class Controller
 {
+    protected readonly ?Connection $db;
+
+    public function __construct(?Connection $db = null)
+    {
+        $this->db = $db;
+    }
+
+    final protected function getQueryBuilder(): AbstractQueryBuilder
+    {
+        if (!isset($this->db)) {
+            throw new \RuntimeException();
+        }
+
+        return $this->db->getBuider();
+    }
 }

@@ -29,32 +29,44 @@
 
 namespace TorresDeveloper\MVC;
 
-use TorresDeveloper\PdoWrapperAPI\{
-    MySQLPDO,
-    Core\PDODataSourceName,
-    Core\PDOCredentials
-};
+//use TorresDeveloper\PdoWrapperAPI\{
+    //MySQLPDO,
+    //Core\PDODataSourceName,
+    //Core\PDOCredentials
+//};
 
 final class MVC
 {
     private Request $request;
 
-    private MySQLPDO $dbh;
+    //private MySQLPDO $dbh;
 
-    public string $controllersNS;
+    //public Controller $controller;
 
-    public Controller $controller;
-
-    public function __construct(string $controllersNS)
+    public function __construct(string $ns)
     {
-        $this->controllersNS = "$controllersNS\\Controllers";
+        $ns = "$ns\\Controllers";
 
-        $this->request = new Request(
-            $_GET[PATH_SEARCH_PARAMETER] ?? null,
-            HTTPVerb::tryFrom($_SERVER["REQUEST_METHOD"]),
-            file_get_contents("php://input")
-        );
+        try {
+            $this->request = new Request(
+                new URI($_GET[PATH_SEARCH_PARAMETER] ?? null),
+                HTTPVerb::from($_SERVER["REQUEST_METHOD"]),
+                new RequestBody(new \SplFileObject("php://input"))
+            );
+        } catch (\ValueError $e) {
+            http_response_code(405);
 
+            header("Allow: " . implode(", ", array_map(
+                fn($i) => $i->value,
+                HTTPVerb::cases()
+            )));
+
+            echo $e->getMessage() . PHP_EOL;
+
+            exit(1);
+        }
+
+        /*
         $this->dbh = MySQLPDO::getInstance(
             new PDODataSourceName([
                 "host" => DB_HOST,
@@ -64,35 +76,61 @@ final class MVC
                 DB_PASSWORD
             ))
         );
+         */
 
-        $controller = "$this->controllersNS\\{$this->request->getController()}";
+        $controller = "$ns\\{$this->request->getController()}";
 
         if (!class_exists($controller)) {
             http_response_code(404);
             exit;
         }
 
-        $this->controller = new $controller(
-            $this->request->getParameters(),
-            $this->request->getMethod(),
-            $this->request->getBody(),
-            $this->dbh
-        );
-
-        $this->deploy();
+        $this->deploy($controller);
     }
 
-    public function deploy(): void
+    public function deploy(string $controller): void
     {
+        $class = new \ReflectionClass($controller::class);
+
         $action = $this->request->getAction();
 
-        if (!method_exists($this->controller, $action)) {
+        $method = $class->getMethod($action);
+
+        if (!$method->getAttributes(Route::class)) {
             http_response_code(404);
             exit;
         }
 
+        $returnType = $method->getReturnType();
+
+        if (
+            !($returnType instanceof \ReflectionNamedType)
+            || $returnType->allowsNull()
+        ) {
+            exit;
+        }
+
+        $returnType = $returnType->getName();
+
+        if ($returnType !== Controller::class) {
+            exit;
+        }
+
+        if ($returnType === Controller::class) {
+            return $this->deploy((new $controller())
+                ->{$action}($this->request->getParameters())::class
+            );
+        }
+
+        $db = $class->getAttributes(DB::class);
+
+        if ($methodDB = $method->getAttributes(DB::class)) {
+            $db = $methodDB;
+        }
+
         try {
-            $this->controller->{$action}($this->request->getParameters());
+            (new $controller(array_pop($db)->newInstance()->getProxy()))
+                ->{$action}($this->request->getParameters());
         } catch (\Error $e) {
             http_response_code(404);
             exit($e);

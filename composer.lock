@@ -102,12 +102,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/torres-developer/PDOWrapperAPI.git",
-                "reference": "14c2aef532879de0ecbde8a07c8190682c1880dd"
+                "reference": "47ba4bbc7689cbe9493d5283c46ce6c6619ab377"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/torres-developer/PDOWrapperAPI/zipball/14c2aef532879de0ecbde8a07c8190682c1880dd",
-                "reference": "14c2aef532879de0ecbde8a07c8190682c1880dd",
+                "url": "https://api.github.com/repos/torres-developer/PDOWrapperAPI/zipball/47ba4bbc7689cbe9493d5283c46ce6c6619ab377",
+                "reference": "47ba4bbc7689cbe9493d5283c46ce6c6619ab377",
                 "shasum": ""
             },
             "require": {
@@ -115,6 +115,7 @@
                 "php": ">=8.1.11"
             },
             "require-dev": {
+                "friendsofphp/php-cs-fixer": "dev-master",
                 "pds/skeleton": "^1.0"
             },
             "default-branch": true,
