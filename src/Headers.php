@@ -17,18 +17,22 @@ final class Headers
 
     public function __set(string $name, mixed $value): void
     {
+        $name = mb_strtoupper($name);
+
         if ($this->__isset($name)) {
-            array_push($this->headers[(string) $name], $value);
+            array_push($this->headers[$name], $value);
         } else {
-            $this->headers[(string) $name] = [$value];
+            $this->headers[$name] = [$value];
         }
     }
 
     public function __get(string $name): mixed
     {
-        //return $this->headers[(string) $name] ?? null;
+        $name = mb_strtoupper($name);
 
-        if (($header = $this->headers[(string) $name]) === null) {
+        //return $this->headers[$name] ?? null;
+
+        if (($header = $this->headers[$name]) === null) {
             return null;
         }
 
@@ -37,12 +41,16 @@ final class Headers
 
     public function __isset(string $name): bool
     {
-        return isset($this->headers[(string) $name]);
+        $name = mb_strtoupper($name);
+
+        return isset($this->headers[$name]);
     }
 
     public function __unset(string $name): void
     {
-        unset($this->headers[(string) $name]);
+        $name = mb_strtoupper($name);
+
+        unset($this->headers[$name]);
     }
 
     public function toArray(): array

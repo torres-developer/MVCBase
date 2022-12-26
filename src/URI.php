@@ -31,9 +31,14 @@ namespace TorresDeveloper\MVC;
 
 use Psr\Http\Message\UriInterface;
 
+/**
+ * TODO: "/^(:?[\w\d\-\.~]|(%[[:xdigit]]{2})|[!$&'\(\)\*\+,;=]|:|@)/"
+ * (lines 145 and 249), cant be rawurlencode but we need to urlencode the rest
+ * for thr path, query and fragment
+ */
 final class URI implements UriInterface
 {
-    public const DEFAULT_PORTS = [
+    public static const DEFAULT_PORTS = [
         "http" => [80],
         "ftp" => [20, 21],
         "ssh" => [22],
@@ -58,21 +63,23 @@ final class URI implements UriInterface
     {
         $uri = trim($uri);
 
-        if (filter_var($uri, FILTER_VALIDATE_URL) === false) {
-            throw new \DomainException();
+        if (
+            filter_var($uri, FILTER_VALIDATE_URL) === false
+            || ($matches = parse_url($uri) === false)
+        ) {
+            throw new \DomainException("Invalid URI: $uri");
         }
-
-        $matches = parse_url($uri);
 
         $this->scheme = $matches["scheme"] ?? null;
         $this->user = $matches["user"] ?? null;
         $this->password = $matches["password"] ?? null;
         $this->host = $matches["host"] ?? null;
-        $this->port = $matches["port"] ?? null;
+        $this->port = isset($matches["port"])
+            ? $this->filterPort($matches["port"])
+            : null;
         $this->path = $matches["path"] ?? null;
         $this->query = $matches["query"] ?? null;
         $this->fragment = $matches["fragment"] ?? null;
-        echo $uri . "\t" . (string) strcmp($uri, $this->__toString()) . PHP_EOL;
     }
 
     public function getScheme(): string
@@ -127,21 +134,6 @@ final class URI implements UriInterface
         return ($this->fragment ?? "");
     }
 
-    public function getOriginForm(): string
-    {
-        $path = $this->getPath();
-        $authority = $this->getAuthority();
-
-        return ((preg_match(
-            "/^(:?[\w\d\-\.~]|(%[[:xdigit]]{2})|[!$&'\(\)\*\+,;=]|:|@)/",
-            $path
-        ) && $authority) ? "/$path" : ((preg_match(
-            "/^\/+/",
-            $path
-        ) && !$authority) ? ("/" . ltrim($path, "/")) : $path))
-        . (($query = $this->getQuery()) ? "?$query" : "");
-    }
-
     public function withScheme($scheme): static
     {
         if (!is_string($scheme)) {
@@ -185,14 +177,7 @@ final class URI implements UriInterface
 
     public function withPort($port): static
     {
-        if (!is_int($port) && $port !== null) {
-            throw new \InvalidArgumentException();
-        }
-
-        // port -> unsigned 16 bit int
-        if(is_int($port) && ($port < 0 || $port > 0xffff)) {
-            throw new \InvalidArgumentException();
-        }
+        $port = $this->filterPort($port);
 
         $uri = clone $this;
         $uri->port = $port;
@@ -251,5 +236,19 @@ final class URI implements UriInterface
             ) && !$authority) ? ("/" . ltrim($path, "/")) : $path))
             . (($query = $this->getQuery()) ? "?$query" : "")
             . (($fragment = $this->getFragment()) ? "#$fragment" : "");
+    }
+
+    private function filterPort(?int $port): ?int
+    {
+        if (!is_int($port) && $port !== null) {
+            throw new \InvalidArgumentException();
+        }
+
+        // port -> unsigned 16 bit int
+        if(is_int($port) && ($port < 0 || $port > 0xffff)) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $port;
     }
 }

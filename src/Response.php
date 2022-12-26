@@ -8,252 +8,129 @@ namespace TorresDeveloper\MVC;
 
 use Psr\Http\Message\{
     ResponseInterface,
-    StreamInterface,
+    StreamInterface
 };
 
 final class Response implements ResponseInterface
 {
-    private string $controller;
-    private string $action;
-    private array $parameters;
+    use MessageTrait;
 
-    private string $protocol;
+    public static const STATUS = [
+        100 => "Continue",
+        101 => "Switching Protocols",
+        102 => "Processing",
+        103 => "Early Hints",
+        200 => "OK",
+        201 => "Created",
+        202 => "Accepted",
+        203 => "Non-Authoritative Information",
+        204 => "No Content",
+        205 => "Reset Content",
+        206 => "Partial Content",
+        207 => "Multi-Status",
+        208 => "Already Reported",
+        226 => "IM Used",
+        300 => "Multiple Choices",
+        301 => "Moved Permanently",
+        302 => "Found",
+        303 => "See Other",
+        304 => "Not Modified",
+        305 => "Use Proxy",
+        307 => "Temporary Redirect",
+        308 => "Permanent Redirect",
+        400 => "Bad Request",
+        401 => "Unauthorized",
+        402 => "Payment Required",
+        403 => "Forbidden",
+        404 => "Not Found",
+        405 => "Method Not Allowed",
+        406 => "Not Acceptable",
+        407 => "Proxy Authentication Required",
+        408 => "Request Timeout",
+        409 => "Conflict",
+        410 => "Gone",
+        411 => "Length Required",
+        412 => "Precondition Failed",
+        413 => "Content Too Large",
+        414 => "URI Too Long",
+        415 => "Unsupported Media Type",
+        416 => "Range Not Satisfiable",
+        417 => "Expectation Failed",
+        421 => "Misdirected Request",
+        422 => "Unprocessable Content",
+        423 => "Locked",
+        424 => "Failed Dependency",
+        425 => "Too Early",
+        426 => "Upgrade Required",
+        428 => "Precondition Required",
+        429 => "Too Many Requests",
+        431 => "Request Header Fields Too Large",
+        451 => "Unavailable For Legal Reasons",
+        500 => "Internal Server Error",
+        501 => "Not Implemented",
+        502 => "Bad Gateway",
+        503 => "Service Unavailable",
+        504 => "Gateway Timeout",
+        505 => "HTTP Version Not Supported",
+        506 => "Variant Also Negotiates",
+        507 => "Insufficient Storage",
+        508 => "Loop Detected",
+        511 => "Network Authentication Required"
+    ];
 
-    private RequestBody $body;
-
-    private Headers $headers;
+    private int $status;
+    private string $statusText;
 
     public function __construct(
-        URI $resource = new URI("/"),
-        HTTPVerb $method = HTTPVerb::GET,
-        RequestBody $body = new RequestBody(null),
+        int $status,
+        string $reasonPhrase = null,
+        StreamInterface|\SplFileObject|string|null $body
+            = new RequestBody(null),
         Headers $headers = new Headers()
     ) {
-        $this->resource = $resource;
+        $this->status = $this->filterStatus($status);
+        $this->statusText = $reasonPhrase ?? Response::STATUS[$status] ?? "";
 
-        $this->method = $method;
+        if (!($body instanceof StreamInterface)) {
+            $body = new RequestBody($body);
+        }
 
         $this->body = $body;
 
         $this->headers = $headers;
-
-        $this->findRoute($resource->getPath());
-
-        if (!isset($headers->Host)) {
-            $host = $resource->getHost()
-                . ((($port = $resource->getPort()) === null) ? "" : ":$port");
-
-            $headers->Host = $host;
-        }
-
-        $this->protocol = $_SERVER["SERVER_PROTOCOL"];
     }
 
-    public function getProtocolVersion(): string
+    public function getStatusCode(): int
     {
-        $matches = [];
-
-        preg_match("/(?<v>\d+\.\d+)$/", $this->protocol, $matches);
-
-        return $matches["v"];
+        return $this->status;
     }
 
-    public function withProtocolVersion($version): static
+    public function withStatus($code, $reasonPhrase = null): static 
     {
-        if (!is_string($version)) {
+        if (!is_int($code) || !is_string($reasonPhrase)) {
             throw new \InvalidArgumentException();
         }
 
-        if (!preg_match("/^\d+\.\d+$/", $this->protocol)) {
-            throw new \InvalidArgumentException();
+        $res = clone $this;
+        $res->status = $this->filterStatus($code);
+        $res->statusText = $reasonPhrase
+            ?? Response::STATUS[$reasonPhrase]
+            ?? "";
+
+        return $res;
+    }
+
+    public function getReasonPhrase(): string
+    {
+        return $this->statusText;
+    }
+
+    private function filterStatus(int $status): int
+    {
+        if ($status < 100 || $status >= 600) {
+            throw new \DomainException();
         }
 
-        $req = clone $this;
-
-        if (
-            preg_replace("/\d+\.\d+$/", $version, $req->protocol)
-            || !str_ends_with($req->protocol, $version)
-        ) {
-            throw new \RuntimeException();
-        }
-
-        return $req;
-    }
-
-    public function getHeaders(): array
-    {
-        return $this->headers->toArray();
-    }
-
-    public function hasHeader($name): bool
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        $keys = array_keys($this->getHeaders());
-
-        foreach ($keys as $header) {
-            if (strcmp($name, $header) === 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function getHeader($name): array
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        return array_filter(
-            $this->headers->toArray(),
-            fn($i) => strcmp($name, $i),
-            ARRAY_FILTER_USE_KEY
-        );
-    }
-
-    public function getHeaderLine($name): string
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        return "$name: " . implode(
-            ", ",
-            array_merge(...$this->getHeader($name))
-        );
-    }
-
-    public function withHeader($name, $value): static
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        if (!is_string($value) && !is_array($value)) {
-            throw new \InvalidArgumentException();
-        }
-
-        if (is_string($value)) {
-            $value = [$value];
-        }
-
-        $req = clone $this;
-
-        unset($req->headers->$name);
-
-        foreach ($value as $i) {
-            $req->headers->$name = $i;
-        }
-
-        return $req;
-    }
-
-    public function withAddedHeader($name, $value): static
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        if (!is_string($value) && !is_array($value)) {
-            throw new \InvalidArgumentException();
-        }
-
-        if (is_string($value)) {
-            $value = [$value];
-        }
-
-        $req = clone $this;
-
-        foreach ($value as $i) {
-            $req->headers->$name = $i;
-        }
-
-        return $req;
-    }
-
-
-    public function withoutHeader($name): static
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        $req = clone $this;
-
-        unset($req->headers->$name);
-
-        return $req;
-    }
-
-    public function getBody(): StreamInterface
-    {
-        return $this->body;
-    }
-
-    public function withBody(StreamInterface $body): static
-    {
-        $req = clone $this;
-
-        $req->body = $body;
-
-        return $req;
-    }
-
-    public function getStatusCode()
-    {
-        
-    }
-
-    public function withStatus($code, $reasonPhrase = '')
-    {
-        
-    }
-
-    public function getReasonPhrase()
-    {
-        
-    }
-
-    private function findRoute(string $path): void
-    {
-        $path = $path ?: "/";
-
-        $path = explode(
-            "/",
-            trim(filter_var($path, FILTER_SANITIZE_URL), "/\//")
-        );
-
-        $controller = $path[0] ?? null;
-        $action = $path[1] ?? null;
-
-        unset($path[0], $path[1]);
-
-        $this->parameters = array_values($path);
-
-        $controller ??= HOMEPAGE;
-        $controller = explode("-", $controller);
-        $controller = array_map(ucfirst(...), $controller);
-        $this->controller = implode("", $controller) . "Controller";
-
-        $this->action = $action ?? "index";
-    }
-
-    public function getController(): string
-    {
-        return $this->controller;
-    }
-
-    public function getAction(): string
-    {
-        return $this->action;
-    }
-
-    public function getParameters(): array
-    {
-        return $this->parameters;
+        return $status;
     }
 }

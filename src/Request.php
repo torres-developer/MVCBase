@@ -14,29 +14,40 @@ use Psr\Http\Message\{
 
 final class Request implements RequestInterface
 {
-    private URI $resource;
+    use MessageTrait;
 
     private string $controller;
     private string $action;
     private array $parameters;
 
-    private string $protocol;
+    private UriInterface $resource;
 
     private HTTPVerb $method;
 
-    private RequestBody $body;
-
-    private Headers $headers;
+    private string $requestTarget;
 
     public function __construct(
-        URI $resource = new URI("/"),
-        HTTPVerb $method = HTTPVerb::GET,
-        RequestBody $body = new RequestBody(null),
+        UriInterface|string $resource = new URI("/"),
+        HTTPVerb|string $method = HTTPVerb::GET,
+        StreamInterface|\SplFileObject|string|null $body
+            = new RequestBody(null),
         Headers $headers = new Headers()
     ) {
+        if (is_string($resource)) {
+            $resource = new URI($resource);
+        }
+
         $this->resource = $resource;
 
+        if (is_string($method)) {
+            $method = HTTPVerb::from(mb_strtoupper($method));
+        }
+
         $this->method = $method;
+
+        if (!($body instanceof StreamInterface)) {
+            $body = new RequestBody($body);
+        }
 
         $this->body = $body;
 
@@ -54,178 +65,30 @@ final class Request implements RequestInterface
         $this->protocol = $_SERVER["SERVER_PROTOCOL"];
     }
 
-    public function getProtocolVersion(): string
-    {
-        $matches = [];
-
-        preg_match("/(?<v>\d+\.\d+)$/", $this->protocol, $matches);
-
-        return $matches["v"];
-    }
-
-    public function withProtocolVersion($version): static
-    {
-        if (!is_string($version)) {
-            throw new \InvalidArgumentException();
-        }
-
-        if (!preg_match("/^\d+\.\d+$/", $this->protocol)) {
-            throw new \InvalidArgumentException();
-        }
-
-        $req = clone $this;
-
-        if (
-            preg_replace("/\d+\.\d+$/", $version, $req->protocol)
-            || !str_ends_with($req->protocol, $version)
-        ) {
-            throw new \RuntimeException();
-        }
-
-        return $req;
-    }
-
-    public function getHeaders(): array
-    {
-        return $this->headers->toArray();
-    }
-
-    public function hasHeader($name): bool
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        $keys = array_keys($this->getHeaders());
-
-        foreach ($keys as $header) {
-            if (strcmp($name, $header) === 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function getHeader($name): array
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        return array_filter(
-            $this->headers->toArray(),
-            fn($i) => strcmp($name, $i),
-            ARRAY_FILTER_USE_KEY
-        );
-    }
-
-    public function getHeaderLine($name): string
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        return "$name: " . implode(
-            ", ",
-            array_merge(...$this->getHeader($name))
-        );
-    }
-
-    public function withHeader($name, $value): static
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        if (!is_string($value) && !is_array($value)) {
-            throw new \InvalidArgumentException();
-        }
-
-        if (is_string($value)) {
-            $value = [$value];
-        }
-
-        $req = clone $this;
-
-        unset($req->headers->$name);
-
-        foreach ($value as $i) {
-            $req->headers->$name = $i;
-        }
-
-        return $req;
-    }
-
-    public function withAddedHeader($name, $value): static
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        if (!is_string($value) && !is_array($value)) {
-            throw new \InvalidArgumentException();
-        }
-
-        if (is_string($value)) {
-            $value = [$value];
-        }
-
-        $req = clone $this;
-
-        foreach ($value as $i) {
-            $req->headers->$name = $i;
-        }
-
-        return $req;
-    }
-
-
-    public function withoutHeader($name): static
-    {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException();
-        }
-
-        $req = clone $this;
-
-        unset($req->headers->$name);
-
-        return $req;
-    }
-
-    public function getBody(): StreamInterface
-    {
-        return $this->body;
-    }
-
-    public function withBody(StreamInterface $body): static
-    {
-        $req = clone $this;
-
-        $req->body = $body;
-
-        return $req;
-    }
-
     public function getRequestTarget(): string
     {
-        return $this->resource->getPath();
+        if (!isset($this->requestTarget)) {
+            $this->requestTarget = ($this->resource->getPath() ?: "")
+                . (($query = $this->resource->getQuery()) ? "?$query" : "");
+        }
+
+        return $this->requestTarget;
     }
 
     public function withRequestTarget($requestTarget): static
     {
-        $req = clone $this;
-
-        if ($requestTarget === "*") {
-            if ($this->method !== HTTPVerb::OPTIONS) {
-                throw new \InvalidArgumentException();
-            }
-
-
+        if ($requestTarget === "*" && $this->method !== HTTPVerb::OPTIONS) {
+            throw new \DomainException();
         }
 
-        $req->resource = $req->resource->withPath($requestTarget);
+        $matches = parse_url($requestTarget);
+
+        if (isset($matches["host"], $matches["port"]) && $this->method === HTTPVerb::CONNECT) {
+            $requestTarget = "$matches[host]:$matches[port]";
+        }
+
+        $req = clone $this;
+        $req->requestTarget = $requestTarget ?: "/";
 
         return $req;
     }

@@ -10,122 +10,162 @@ use Psr\Http\Message\StreamInterface;
 
 final class RequestBody implements StreamInterface
 {
-    private \SplFileObject|string|null $body;
-    private string $extension;
+    private ?\SplFileObject $body;
 
     public function __construct(\SplFileObject|string|null $body)
     {
-        $this->body = $body;
+        if (is_string($body)) {
+            $body = (new \SplTempFileObject())->fwrite($body);
+            //$body = (new \SplFileObject("php://temp", "rw+"))->fwrite($body);
+        }
 
-        $this->extension = MIME::extensionFromMIME(
-            $_SERVER["HTTP_CONTENT_TYPE"] ?? null
-        );
+        $this->body = $body;
     }
 
     public function __toString(): string
     {
-        return $this->body;
+        try {
+            return $this->getContents();
+        } catch (\Exception) {
+            return "";
+        }
     }
 
     public function close(): void
     {
-        
+        $this->body = null;
     }
 
-    public function detach()
+    public function detach(): ?\SplFileObject
     {
+        $resource = $this->body;
+        $this->body = null;
 
+        return $resource;
     }
 
     public function getSize(): ?int
     {
-        return mb_strlen($this->body);
+        if ($this->body === null) {
+            return null;
+        }
+
+        if (($size = $this->body->getSize()) === false) {
+            throw new \RuntimeException();
+        }
+
+        return $size;
     }
 
     public function tell(): int
     {
-        return 0;
+        if ($this->body === null) {
+            throw new \RuntimeException("Could not tell");
+        }
+
+        if (($pos = $this->body->ftell()) === false) {
+            throw new \RuntimeException();
+        }
+
+        return $pos;
     }
 
     public function eof(): bool
     {
-        return true;
+        return $this->body && $this->body->eof();
     }
 
     public function isSeekable(): bool
     {
-        return false;
+        return $this->body && $this->body->fseek(0, SEEK_CUR) === 0;
     }
 
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
-        
+        if (!is_int($offset) || !is_int($whence)) {
+            throw new \InvalidArgumentException();
+        }
+
+        if ($this->body->fseek($offset, $whence) === -1) {
+            throw new \RuntimeException();
+        }
     }
 
-    public function rewind()
+    public function rewind(): void
     {
-        
+        $this->seek(0);
     }
 
     public function isWritable(): bool
     {
-        return true;
+        return $this->body && $this->body->isWritable();
     }
 
-    public function write($string)
+    public function write($string): int
     {
-        
+        if (!is_string($string)) {
+            throw new \InvalidArgumentException();
+        }
+
+        if (!$this->body) {
+            throw new \RuntimeException();
+        }
+
+        return $this->body->fwrite($string) ?: throw new \RuntimeException();
     }
 
-    public function isReadable()
+    public function isReadable(): bool
     {
-        
+        return $this->body && $this->body->isReadable();
     }
 
-    public function read($length)
+    public function read($length): string
     {
-        
+        if (!is_int($length)) {
+            throw new \InvalidArgumentException();
+        }
+
+        if (!$this->body) {
+            throw new \RuntimeException();
+        }
+
+        return $this->body->fread($length) ?: throw new \RuntimeException();
     }
 
-    public function getContents()
+    public function getContents(): string
     {
-        
+        if ($this->body === null) {
+            throw new \RuntimeException();
+        }
+
+        $pos = $this->tell();
+
+        $this->rewind();
+
+        $contents = $this->read($this->getSize());
+
+        $this->seek($pos);
+
+        return $contents;
     }
 
-    public function getMetadata($key = null)
+    public function getMetadata($key = null): array|mixed|null
     {
-        
+        if (!is_string($key)) {
+            throw new \InvalidArgumentException();
+        }
+
+        if ($this->body === null) {
+            return $key ? null : [];
+        }
+
+        $stats = $this->body->fstat();
+
+        return $key ? $stats[$key] : $stats;
     }
 
-    public function getBody()
+    public function __destruct()
     {
-        if (!$this->extension) throw new \Error();
-
-        $extension = $this->extension;
-
-        return $this->$extension();
-    }
-
-    public function txt()
-    {
-        return $this->body;
-    }
-
-    public function json()
-    {
-        return json_decode($this->body);
-    }
-
-    public function searchParams()
-    {
-        parse_str($this->body, $result);
-
-        return $result;
-    }
-
-    public function _POST()
-    {
-        return $_POST;
+        $this->body = null;
     }
 }
-
