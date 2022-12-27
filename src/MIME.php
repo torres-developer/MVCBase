@@ -19,11 +19,12 @@ final class MIME
         [$type, $subtype] = explode("/", $mime);
 
         switch ($type) {
-            case "text":
+            case "text": {
                 switch ($subtype) {
                     case "plain":
                         return "txt";
                 }
+            }
             case "application": {
                 switch ($subtype) {
                     case "json":
@@ -32,14 +33,14 @@ final class MIME
                         return "_POST";
                 }
             }
-            case "multipart":
+            case "multipart": {
                 switch ($subtype) {
                     case "form-data":
                         return "_POST";
                 }
+            }
         }
 
         return "";
     }
 }
-

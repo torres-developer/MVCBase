@@ -6,11 +6,9 @@
 
 namespace TorresDeveloper\MVC;
 
-use Psr\Http\Message\{
-    RequestInterface,
-    StreamInterface,
-    UriInterface
-};
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 
 final class Request implements RequestInterface
 {
@@ -29,8 +27,7 @@ final class Request implements RequestInterface
     public function __construct(
         UriInterface|string $resource = new URI("/"),
         HTTPVerb|string $method = HTTPVerb::GET,
-        StreamInterface|\SplFileObject|string|null $body
-            = new RequestBody(null),
+        StreamInterface|\SplFileObject|string|null $body = new RequestBody(null),
         Headers $headers = new Headers()
     ) {
         if (is_string($resource)) {

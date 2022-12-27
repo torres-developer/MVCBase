@@ -6,16 +6,14 @@
 
 namespace TorresDeveloper\MVC;
 
-use Psr\Http\Message\{
-    ResponseInterface,
-    StreamInterface
-};
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 final class Response implements ResponseInterface
 {
     use MessageTrait;
 
-    public static const STATUS = [
+    public const STATUS = [
         100 => "Continue",
         101 => "Switching Protocols",
         102 => "Processing",
@@ -84,8 +82,7 @@ final class Response implements ResponseInterface
     public function __construct(
         int $status,
         string $reasonPhrase = null,
-        StreamInterface|\SplFileObject|string|null $body
-            = new RequestBody(null),
+        StreamInterface|\SplFileObject|string|null $body = new RequestBody(null),
         Headers $headers = new Headers()
     ) {
         $this->status = $this->filterStatus($status);
@@ -105,7 +102,7 @@ final class Response implements ResponseInterface
         return $this->status;
     }
 
-    public function withStatus($code, $reasonPhrase = null): static 
+    public function withStatus($code, $reasonPhrase = null): static
     {
         if (!is_int($code) || !is_string($reasonPhrase)) {
             throw new \InvalidArgumentException();

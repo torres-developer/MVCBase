@@ -8,10 +8,8 @@ declare(strict_types=1);
 
 namespace TorresDeveloper\MVC;
 
-use TorresDeveloper\PdoWrapperAPI\Core\{
-    AbstractQueryBuilder,
-    Connection
-};
+use TorresDeveloper\PdoWrapperAPI\Core\AbstractQueryBuilder;
+use TorresDeveloper\PdoWrapperAPI\Core\Connection;
 
 /**
  * Controller

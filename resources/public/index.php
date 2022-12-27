@@ -29,19 +29,22 @@
 declare(encoding="UTF-8");
 declare(strict_types=1);
 
-if (!__NAMESPACE__) throw new \Exception("Define a PSR-4 namespace");
+if (!__NAMESPACE__) {
+    throw new \Exception("Define a PSR-4 namespace");
+}
 
 mb_internal_encoding("UTF-8");
 
-if (ini_set("default_charset", "utf-8") === false)
+if (ini_set("default_charset", "utf-8") === false) {
     throw new \Exception("Could not set default_charset to utf-8, "
     . "please ensure it's set on your system!");
+}
 
 mb_http_output("UTF-8");
 
 require_once __DIR__ . "/../config/config.php";
 
-defined("ROOT") OR exit(1);
+defined("ROOT") or exit(1);
 
 session_start();
 
@@ -50,4 +53,3 @@ error_reporting(!DEBUG ? 0 : DEBUG_LEVEL);
 require_once __DIR__ . "/../vendor/autoload.php";
 
 new \TorresDeveloper\MVC\MVC(__NAMESPACE__);
-

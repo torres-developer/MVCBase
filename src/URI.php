@@ -38,7 +38,7 @@ use Psr\Http\Message\UriInterface;
  */
 final class URI implements UriInterface
 {
-    public static const DEFAULT_PORTS = [
+    public const DEFAULT_PORTS = [
         "http" => [80],
         "ftp" => [20, 21],
         "ssh" => [22],
@@ -63,10 +63,7 @@ final class URI implements UriInterface
     {
         $uri = trim($uri);
 
-        if (
-            filter_var($uri, FILTER_VALIDATE_URL) === false
-            || ($matches = parse_url($uri) === false)
-        ) {
+        if (filter_var($uri, FILTER_VALIDATE_URL) === false || ($matches = parse_url($uri) === false)) {
             throw new \DomainException("Invalid URI: $uri");
         }
 
@@ -214,7 +211,7 @@ final class URI implements UriInterface
         if (!is_string($fragment)) {
             throw new \InvalidArgumentException();
         }
-        
+
         $uri = clone $this;
         $uri->fragment = $fragment ?: null;
 
@@ -245,7 +242,7 @@ final class URI implements UriInterface
         }
 
         // port -> unsigned 16 bit int
-        if(is_int($port) && ($port < 0 || $port > 0xffff)) {
+        if (is_int($port) && ($port < 0 || $port > 0xffff)) {
             throw new \InvalidArgumentException();
         }
 

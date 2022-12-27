@@ -6,9 +6,10 @@
 
 namespace TorresDeveloper\MVC;
 
-use \Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamInterface;
 
-trait MessageTrait {
+trait MessageTrait
+{
     private StreamInterface $body;
 
     private Headers $headers;
@@ -114,5 +115,4 @@ trait MessageTrait {
 
         return $req;
     }
-
 }

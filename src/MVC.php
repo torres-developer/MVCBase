@@ -37,7 +37,7 @@ namespace TorresDeveloper\MVC;
 
 final class MVC
 {
-    private Request $request;
+    private ServerRequest $request;
 
     //private MySQLPDO $dbh;
 
@@ -48,7 +48,7 @@ final class MVC
         $ns = "$ns\\Controllers";
 
         try {
-            $this->request = new Request(
+            $this->request = new ServerRequest(
                 new URI($_GET[PATH_SEARCH_PARAMETER] ?? null),
                 HTTPVerb::from($_SERVER["REQUEST_METHOD"]),
                 new RequestBody(new \SplFileObject("php://input"))
@@ -85,7 +85,7 @@ final class MVC
             exit;
         }
 
-        $this->deploy($controller, new Response());
+        $this->deploy($controller, new Response(200));
     }
 
     public function deploy(string $controller, Response $response): Response
@@ -103,10 +103,7 @@ final class MVC
 
         $returnType = $method->getReturnType();
 
-        if (
-            !($returnType instanceof \ReflectionNamedType)
-            || $returnType->allowsNull()
-        ) {
+        if (!($returnType instanceof \ReflectionNamedType) || $returnType->allowsNull()) {
             exit;
         }
 
@@ -139,4 +136,3 @@ final class MVC
         }
     }
 }
-

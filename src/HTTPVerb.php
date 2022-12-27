@@ -2,7 +2,8 @@
 
 namespace TorresDeveloper\MVC;
 
-enum HTTPVerb: string {
+enum HTTPVerb: string
+{
     case OPTIONS = "OPTIONS";
     case GET = "GET";
     case HEAD = "HEAD";
@@ -17,4 +18,3 @@ enum HTTPVerb: string {
         return $this->value;
     }
 }
-

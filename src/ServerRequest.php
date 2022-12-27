@@ -6,9 +6,7 @@
 
 namespace TorresDeveloper\MVC;
 
-use Psr\Http\Message\{
-    ServerRequestInterface,
-};
+use Psr\Http\Message\ServerRequestInterface;
 
 final class ServerRequest extends Request implements ServerRequestInterface
 {
@@ -73,26 +71,21 @@ final class ServerRequest extends Request implements ServerRequestInterface
 
     public function withParsedBody($data)
     {
-        
     }
 
     public function getAttributes()
     {
-        
     }
 
     public function getAttribute($name, $default = null)
     {
-        
     }
 
     public function withAttribute($name, $value)
     {
-        
     }
 
     public function withoutAttribute($name)
     {
-        
     }
 }

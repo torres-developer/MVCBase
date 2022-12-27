@@ -63,4 +63,3 @@ define("HOMEPAGE", "Home");
  * @var string PATH_SEARCH_PARAMETER Used for routing.
  */
 define("PATH_SEARCH_PARAMETER", "path");
-

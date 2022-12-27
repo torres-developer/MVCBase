@@ -2,5 +2,4 @@
 
 namespace TorresDeveloper\MVC;
 
-defined("ROOT") OR exit(1);
-
+defined("ROOT") or exit(1);
