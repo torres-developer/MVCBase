@@ -27,7 +27,7 @@ final class Request implements RequestInterface
     public function __construct(
         UriInterface|string $resource = new URI("/"),
         HTTPVerb|string $method = HTTPVerb::GET,
-        StreamInterface|\SplFileObject|string|null $body = new RequestBody(null),
+        StreamInterface|\SplFileObject|string|null $body = new MessageBody(null),
         Headers $headers = new Headers()
     ) {
         if (is_string($resource)) {
@@ -43,14 +43,12 @@ final class Request implements RequestInterface
         $this->method = $method;
 
         if (!($body instanceof StreamInterface)) {
-            $body = new RequestBody($body);
+            $body = new MessageBody($body);
         }
 
         $this->body = $body;
 
         $this->headers = $headers;
-
-        $this->findRoute($resource->getPath());
 
         if (!isset($headers->Host)) {
             $host = $resource->getHost()
@@ -144,44 +142,5 @@ final class Request implements RequestInterface
         $uri->method = $method;
 
         return $uri;
-    }
-
-    private function findRoute(string $path): void
-    {
-        $path = $path ?: "/";
-
-        $path = explode(
-            "/",
-            trim(filter_var($path, FILTER_SANITIZE_URL), "/\//")
-        );
-
-        $controller = $path[0] ?? null;
-        $action = $path[1] ?? null;
-
-        unset($path[0], $path[1]);
-
-        $this->parameters = array_values($path);
-
-        $controller ??= HOMEPAGE;
-        $controller = explode("-", $controller);
-        $controller = array_map(ucfirst(...), $controller);
-        $this->controller = implode("", $controller) . "Controller";
-
-        $this->action = $action ?? "index";
-    }
-
-    public function getController(): string
-    {
-        return $this->controller;
-    }
-
-    public function getAction(): string
-    {
-        return $this->action;
-    }
-
-    public function getParameters(): array
-    {
-        return $this->parameters;
     }
 }

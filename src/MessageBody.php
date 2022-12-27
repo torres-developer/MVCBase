@@ -8,7 +8,7 @@ namespace TorresDeveloper\MVC;
 
 use Psr\Http\Message\StreamInterface;
 
-final class RequestBody implements StreamInterface
+final class MessageBody implements StreamInterface
 {
     private ?\SplFileObject $body;
 
