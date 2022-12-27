@@ -56,6 +56,17 @@ class File implements UploadedFileInterface
         $this->type = $type;
     }
 
+    public static function from_FILES(array $file): static
+    {
+        return new static(
+            new MessageBody(new \SplFileObject($file["tmp_name"])),
+            $file["size"],
+            $file["error"],
+            $file["name"],
+            $file["type"]
+        );
+    }
+
     public function getStream(): StreamInterface
     {
         if ($this->moved) {

@@ -12,35 +12,50 @@ final class MIME
     {
     }
 
-    public static function extensionFromMIME(?string $mime): string
-    {
-        $mime ??= "*/*";
+    public static function parseFromMIME(
+        MessageBody $body,
+        string $mime,
+        HTTPVerb $method
+    ): array|object|null {
+        $content = $body->getContents();
+        $body = new MessageBody($content);
+        $parsedBody = null;
 
-        [$type, $subtype] = explode("/", $mime);
+        switch ($mime) {
+            case "application/x-www-form-urlencoded":
+            case "multipart/form-data":
+                if ($method === HTTPVerb::POST) {
+                    $parsedBody = $_POST;
+                } else {
+                    $parsedBody = [];
+                    parse_str($content, $parsedBody);
+                }
 
-        switch ($type) {
-            case "text": {
-                switch ($subtype) {
-                    case "plain":
-                        return "txt";
+                break;
+            case "application/json":
+                $parsedBody = json_decode($content);
+
+                break;
+            case "text/csv":
+                $file = (new MessageBody($content))
+                    ->detach();
+
+                $parsedBody = [];
+
+                while (!$file->eof()) {
+                    $parsedBody[] = $file->fgetcsv();
                 }
-            }
-            case "application": {
-                switch ($subtype) {
-                    case "json":
-                        return "json";
-                    case "x-www-form-urlencoded":
-                        return "_POST";
+            case "text/tab-separeted-values":
+                $file = (new MessageBody($content))
+                    ->detach();
+
+                $parsedBody = [];
+
+                while (!$file->eof()) {
+                    $parsedBody[] = $file->fgetcsv("\t");
                 }
-            }
-            case "multipart": {
-                switch ($subtype) {
-                    case "form-data":
-                        return "_POST";
-                }
-            }
         }
 
-        return "";
+        return $parsedBody;
     }
 }
