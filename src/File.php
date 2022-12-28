@@ -44,7 +44,7 @@ class File implements UploadedFileInterface
 
     public function __construct(
         StreamInterface $stream,
-        ?int $size = null,
+        ?int $size,
         int $error,
         ?string $name,
         ?string $type
