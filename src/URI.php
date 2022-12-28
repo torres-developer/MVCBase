@@ -59,11 +59,15 @@ final class URI implements UriInterface
     private ?string $query;
     private ?string $fragment;
 
-    public function __construct(string $uri)
+    public function __construct(string $uri, bool $validate = true)
     {
         $uri = trim($uri);
 
-        if (filter_var($uri, FILTER_VALIDATE_URL) === false || ($matches = parse_url($uri) === false)) {
+        if ($validate && filter_var($uri, FILTER_VALIDATE_URL) === false) {
+            throw new \DomainException("Invalid URI: $uri");
+        }
+
+        if (($matches = parse_url($uri)) === false) {
             throw new \DomainException("Invalid URI: $uri");
         }
 
@@ -74,7 +78,7 @@ final class URI implements UriInterface
         $this->port = isset($matches["port"])
             ? $this->filterPort($matches["port"])
             : null;
-        $this->path = $matches["path"] ?? null;
+        $this->path = $matches["path"] ?? "/";
         $this->query = $matches["query"] ?? null;
         $this->fragment = $matches["fragment"] ?? null;
     }
