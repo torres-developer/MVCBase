@@ -105,17 +105,17 @@ final class MVC
         $body = new MessageBody(new \SplFileObject("php://input"));
 
         $serverParams = [
-            "REMOTE_ADDR" => $_SERVER["REMOTE_ADDR"],
-            "REMOTE_PORT" => $_SERVER["REMOTE_PORT"],
-            "SERVER_SOFTWARE" => $_SERVER["SERVER_SOFTWARE"],
-            "SERVER_PROTOCOL" => $_SERVER["SERVER_PROTOCOL"],
-            "SERVER_NAME" => $_SERVER["SERVER_NAME"],
-            "SERVER_PORT" => $_SERVER["SERVER_PORT"],
-            "REQUEST_URI" => $_SERVER["REQUEST_URI"],
-            "REQUEST_METHOD" => $_SERVER["REQUEST_METHOD"],
-            "QUERY_STRING" => $_SERVER["QUERY_STRING"],
-            "REQUEST_TIME_FLOAT" => $_SERVER["REQUEST_TIME_FLOAT"],
-            "REQUEST_TIME" => $_SERVER["REQUEST_TIME"],
+            "REMOTE_ADDR" => $_SERVER["REMOTE_ADDR"] ?? null,
+            "REMOTE_PORT" => $_SERVER["REMOTE_PORT"] ?? null,
+            "SERVER_SOFTWARE" => $_SERVER["SERVER_SOFTWARE"] ?? null,
+            "SERVER_PROTOCOL" => $_SERVER["SERVER_PROTOCOL"] ?? null,
+            "SERVER_NAME" => $_SERVER["SERVER_NAME"] ?? null,
+            "SERVER_PORT" => $_SERVER["SERVER_PORT"] ?? null,
+            "REQUEST_URI" => $_SERVER["REQUEST_URI"] ?? null,
+            "REQUEST_METHOD" => $_SERVER["REQUEST_METHOD"] ?? null,
+            "QUERY_STRING" => $_SERVER["QUERY_STRING"] ?? null,
+            "REQUEST_TIME_FLOAT" => $_SERVER["REQUEST_TIME_FLOAT"] ?? null,
+            "REQUEST_TIME" => $_SERVER["REQUEST_TIME"] ?? null,
         ];
 
         $req = new ServerRequest(
