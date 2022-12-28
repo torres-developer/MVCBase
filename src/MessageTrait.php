@@ -49,8 +49,12 @@ trait MessageTrait
         return $this->headers->toArray();
     }
 
-    public function hasHeader(string $name): bool
+    public function hasHeader($name): bool
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException();
+        }
+
         return isset($this->headers->$name);
     }
 
