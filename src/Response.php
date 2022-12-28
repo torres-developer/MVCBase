@@ -82,14 +82,14 @@ final class Response implements ResponseInterface
     public function __construct(
         int $status,
         string $reasonPhrase = null,
-        StreamInterface|\SplFileObject|string|null $body = new RequestBody(null),
+        StreamInterface|\SplFileObject|string|null $body = new MessageBody(null),
         Headers $headers = new Headers()
     ) {
         $this->status = $this->filterStatus($status);
         $this->statusText = $reasonPhrase ?? Response::STATUS[$status] ?? "";
 
         if (!($body instanceof StreamInterface)) {
-            $body = new RequestBody($body);
+            $body = new MessageBody($body);
         }
 
         $this->body = $body;

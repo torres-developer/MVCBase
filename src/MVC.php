@@ -158,7 +158,7 @@ final class MVC
 
     public function deploy(string $controller, Response $response): Response
     {
-        $class = new \ReflectionClass($controller::class);
+        $class = new \ReflectionClass($controller);
 
         $action = $this->request->getAction();
 
@@ -177,7 +177,7 @@ final class MVC
 
         $returnType = $returnType->getName();
 
-        if ($returnType !== Controller::class) {
+        if ($returnType !== Controller::class && $returnType !== Response::class) {
             exit;
         }
 
@@ -195,9 +195,12 @@ final class MVC
             $db = $methodDB;
         }
 
+        $db = $db ? array_pop($db)->newInstance()->getProxy() : null;
+
+        var_dump($db);
+
         try {
-            (new $controller(array_pop($db)->newInstance()->getProxy()))
-                ->{$action}($response, $this->request->getParameters());
+            (new $controller($db))->{$action}($this->request, $response);
         } catch (\Error $e) {
             http_response_code(404);
             exit($e);

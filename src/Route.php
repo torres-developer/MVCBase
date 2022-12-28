@@ -29,7 +29,7 @@
 
 namespace TorresDeveloper\MVC;
 
-#[\Attribute]
+#[\Attribute(\Attribute::TARGET_METHOD)]
 class Route
 {
 }

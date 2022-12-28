@@ -50,8 +50,12 @@ final class MessageBody implements StreamInterface
             return null;
         }
 
-        if (($size = $this->body->getSize()) === false) {
-            throw new \RuntimeException();
+        try {
+            if (($size = $this->body->getSize()) === false) {
+                throw new \RuntimeException();
+            }
+        } catch (\RuntimeException) {
+            return null;
         }
 
         return $size;
@@ -129,7 +133,7 @@ final class MessageBody implements StreamInterface
             throw new \RuntimeException();
         }
 
-        return $this->body->fread($length) ?: throw new \RuntimeException();
+        return $this->body->fread($length) ?: "";
     }
 
     public function getContents(): string
@@ -142,7 +146,10 @@ final class MessageBody implements StreamInterface
 
         $this->rewind();
 
-        $contents = $this->read($this->getSize());
+        $contents = "";
+        if (($size = $this->getSize()) > 0) {
+            $contents = $this->read($size);
+        }
 
         $this->seek($pos);
 

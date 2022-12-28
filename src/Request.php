@@ -14,10 +14,6 @@ class Request implements RequestInterface
 {
     use MessageTrait;
 
-    private string $controller;
-    private string $action;
-    private array $parameters;
-
     private UriInterface $resource;
 
     private HTTPVerb $method;

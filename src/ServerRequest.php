@@ -13,6 +13,10 @@ use Psr\Http\Message\UriInterface;
 
 final class ServerRequest extends Request implements ServerRequestInterface
 {
+    private string $controller;
+    private string $action;
+    private array $parameters;
+
     private array $serverParams;
     private array $cookieParams = [];
     private array $queryParams;
