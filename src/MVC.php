@@ -127,12 +127,15 @@ final class MVC
         );
 
         $req = $req->withCookieParams($_COOKIE)
-            ->withUploadedFiles(array_map(File::from_FILES(...), $_FILES))
-            ->withParsedBody(MIME::parseFromMIME(
+            ->withUploadedFiles(array_map(File::from_FILES(...), $_FILES));
+
+        if ($body->getContents()) {
+            $req = $req->withParsedBody(MIME::parseFromMIME(
                 $body,
-                $_SERVER["HTTP_CONTENT_TYPE"],
+                $_SERVER["HTTP_CONTENT_TYPE"] ?? "",
                 $method
             ));
+        }
 
         return $req;
     }
