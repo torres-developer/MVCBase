@@ -149,7 +149,7 @@ final class MessageBody implements StreamInterface
         return $contents;
     }
 
-    public function getMetadata($key = null): array|mixed|null
+    public function getMetadata($key = null): mixed
     {
         if (!is_string($key)) {
             throw new \InvalidArgumentException();
