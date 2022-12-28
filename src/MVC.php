@@ -83,7 +83,6 @@ final class MVC
             exit(1);
         }
 
-        var_dump($this->request);
         $controller = "$ns\\{$this->request->getController()}";
 
         if (!class_exists($controller)) {
