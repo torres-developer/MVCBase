@@ -25,8 +25,12 @@ trait MessageTrait
         return $matches["v"];
     }
 
-    public function withProtocolVersion(string $version): static
+    public function withProtocolVersion($version): static
     {
+        if (!is_string($version)) {
+            throw new \InvalidArgumentException();
+        }
+
         if (!preg_match("/^\d+\.\d+$/", $version)) {
             throw new \InvalidArgumentException();
         }
@@ -50,18 +54,34 @@ trait MessageTrait
         return isset($this->headers->$name);
     }
 
-    public function getHeader(string $name): array
+    public function getHeader($name): array
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException();
+        }
+
         return $this->headers->$name;
     }
 
-    public function getHeaderLine(string $name): string
+    public function getHeaderLine($name): string
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException();
+        }
+
         return "$name: " . implode($this->headers->$name);
     }
 
-    public function withHeader(string $name, string|array $value): static
+    public function withHeader($name, $value): static
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException();
+        }
+
+        if (!is_string($value) && !is_array($value)) {
+            throw new \InvalidArgumentException();
+        }
+
         if (is_string($value)) {
             $value = [$value];
         }
@@ -77,8 +97,16 @@ trait MessageTrait
         return $req;
     }
 
-    public function withAddedHeader(string $name, string|array $value): static
+    public function withAddedHeader($name, $value): static
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException();
+        }
+
+        if (!is_string($value) && !is_array($value)) {
+            throw new \InvalidArgumentException();
+        }
+
         if (is_string($value)) {
             $value = [$value];
         }
@@ -93,8 +121,12 @@ trait MessageTrait
     }
 
 
-    public function withoutHeader(string $name): static
+    public function withoutHeader($name): static
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException();
+        }
+
         $req = clone $this;
 
         unset($req->headers->$name);

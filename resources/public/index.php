@@ -29,6 +29,12 @@
 declare(encoding="UTF-8");
 declare(strict_types=1);
 
+/*
+ * Define your namespace like this:
+ *
+ * namespace <NamespaceName>(\<SubNamespaceNames>)*;
+ */
+
 if (!__NAMESPACE__) {
     throw new \Exception("Define a PSR-4 namespace");
 }

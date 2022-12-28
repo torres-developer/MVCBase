@@ -60,6 +60,7 @@ final class MVC
      * @see Controller
      *
      * @uses MVC::CONTROLLERS_SUBNAMESPACE_NAME
+     * @uses MVC::createRequest()
      *
      * @throws \RuntimeException In case of a bad dsn string for the \PDO __construct.
      */
@@ -80,20 +81,8 @@ final class MVC
             echo $e->getMessage() . PHP_EOL;
 
             exit(1);
-        } catch (\Error) {
+        } catch (\Throwable) {
         }
-
-        /*
-        $this->dbh = MySQLPDO::getInstance(
-            new PDODataSourceName([
-                "host" => DB_HOST,
-                "database" => DB_NAME
-            ], new PDOCredentials(
-                DB_USERNAME,
-                DB_PASSWORD
-            ))
-        );
-         */
 
         $controller = "$ns\\{$this->request->getController()}";
 
