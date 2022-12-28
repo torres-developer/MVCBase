@@ -81,9 +81,9 @@ final class MVC
             echo $e->getMessage() . PHP_EOL;
 
             exit(1);
-        } catch (\Throwable) {
         }
 
+        var_dump($this->request);
         $controller = "$ns\\{$this->request->getController()}";
 
         if (!class_exists($controller)) {
