@@ -199,7 +199,7 @@ final class MVC
         var_dump($db);
 
         try {
-            (new $controller($db))->{$action}($this->request, $response);
+            return (new $controller($db))->{$action}($this->request, $response);
         } catch (\Error $e) {
             http_response_code(404);
             exit($e);
