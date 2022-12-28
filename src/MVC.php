@@ -98,7 +98,13 @@ final class MVC
     {
         $uri = (($_SERVER["HTTP_HOST"] ?? "") . ($_SERVER["REQUEST_URI"] ?? ""));
 
-        $uri = new URI($uri ?: $_GET[PATH_SEARCH_PARAMETER] ?? null);
+        $uri = $uri ?: $_GET[PATH_SEARCH_PARAMETER] ?? null;
+
+        if (str_starts_with($_SERVER["SERVER_PROTOCOL"], "HTTP")) {
+            $uri = "http://" . $uri;
+        }
+
+        $uri = new URI($uri);
 
         $method = HTTPVerb::from($_SERVER["REQUEST_METHOD"]);
 
