@@ -23,10 +23,10 @@ use TorresDeveloper\PdoWrapperAPI\Core\Connection;
  */
 abstract class Controller
 {
+    use ConnectionHolder;
+
     protected readonly ServerRequestInterface $req;
     protected readonly ResponseInterface $res;
-
-    protected readonly Connection $db;
 
     public function __construct(
         ServerRequestInterface $req,
@@ -36,22 +36,13 @@ abstract class Controller
         $this->res = $res;
     }
 
-    final protected function getQueryBuilder(): AbstractQueryBuilder
-    {
-        if (!isset($this->db)) {
-            throw new \RuntimeException();
-        }
-
-        return $this->db->getBuider();
-    }
-
-    public function setDB(Connection $db): void
+    public final function setDB(Connection $db): void
     {
         $this->db = $db;
     }
 
-    public function getResponse(): ResponseInterface
+    public final function getResponse(): ResponseInterface
     {
-        return $$this->res;
+        return $this->res;
     }
 }
