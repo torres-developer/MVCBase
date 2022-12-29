@@ -168,28 +168,6 @@ final class MVC
             exit;
         }
 
-        $returnType = $method->getReturnType();
-
-        if (!($returnType instanceof \ReflectionNamedType) || $returnType->allowsNull()) {
-            exit;
-        }
-
-        $returnType = $returnType->getName();
-
-        if ($returnType !== Controller::class && $returnType !== Response::class) {
-            exit;
-        }
-
-        if ($returnType === Controller::class) {
-            throw new \Exception("not implemented", 1);
-
-            return $this->deploy(
-                (new $controller())
-                    ->{$action}($response, $this->request->getParameters())::class,
-                $response
-            );
-        }
-
         $controller = new $controller($this->request, $response);
 
         $db = $class->getAttributes(DB::class);
@@ -205,10 +183,10 @@ final class MVC
         }
 
         try {
-            $controller->{$action}($this->request->getParameters());
-        } catch (\Error $e) {
-            http_response_code(404);
-            exit($e);
+            $controller->{$action}(...$this->request->getParameters());
+        } catch (\Exception) {
+            http_response_code(500);
+            exit(1);
         }
 
         return $controller->getResponse();
