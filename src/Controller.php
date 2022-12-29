@@ -49,4 +49,9 @@ abstract class Controller
     {
         $this->db = $db;
     }
+
+    public function getResponse(): ResponseInterface
+    {
+        return $$this->res;
+    }
 }

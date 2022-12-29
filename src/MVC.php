@@ -205,10 +205,12 @@ final class MVC
         }
 
         try {
-            return $controller->{$action}($this->request->getParameters());
+            $controller->{$action}($this->request->getParameters());
         } catch (\Error $e) {
             http_response_code(404);
             exit($e);
         }
+
+        return $controller->getResponse();
     }
 }
