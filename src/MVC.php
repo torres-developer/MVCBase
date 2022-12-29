@@ -74,7 +74,7 @@ final class MVC
             http_response_code(405);
 
             header("Allow: " . implode(", ", array_map(
-                fn($i) => $i->value,
+                fn ($i) => $i->value,
                 HTTPVerb::cases()
             )));
 
@@ -181,12 +181,16 @@ final class MVC
         }
 
         if ($returnType === Controller::class) {
+            throw new \Exception("not implemented", 1);
+
             return $this->deploy(
                 (new $controller())
                     ->{$action}($response, $this->request->getParameters())::class,
                 $response
             );
         }
+
+        $controller = new $controller($this->request, $response);
 
         $db = $class->getAttributes(DB::class);
 
@@ -196,10 +200,12 @@ final class MVC
 
         $db = $db ? array_pop($db)->newInstance()->getProxy() : null;
 
-        var_dump($db);
+        if ($db) {
+            $controller->setDB($db);
+        }
 
         try {
-            return (new $controller($db))->{$action}($this->request, $response);
+            return $controller->{$action}($this->request->getParameters());
         } catch (\Error $e) {
             http_response_code(404);
             exit($e);

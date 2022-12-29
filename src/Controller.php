@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace TorresDeveloper\MVC;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TorresDeveloper\PdoWrapperAPI\Core\AbstractQueryBuilder;
 use TorresDeveloper\PdoWrapperAPI\Core\Connection;
 
@@ -21,11 +23,17 @@ use TorresDeveloper\PdoWrapperAPI\Core\Connection;
  */
 abstract class Controller
 {
-    protected readonly ?Connection $db;
+    protected readonly ServerRequestInterface $req;
+    protected readonly ResponseInterface $res;
 
-    public function __construct(?Connection $db = null)
-    {
-        $this->db = $db;
+    protected readonly Connection $db;
+
+    public function __construct(
+        ServerRequestInterface $req,
+        ResponseInterface $res
+    ) {
+        $this->req = $req;
+        $this->res = $res;
     }
 
     final protected function getQueryBuilder(): AbstractQueryBuilder
@@ -35,5 +43,10 @@ abstract class Controller
         }
 
         return $this->db->getBuider();
+    }
+
+    public function setDB(Connection $db): void
+    {
+        $this->db = $db;
     }
 }

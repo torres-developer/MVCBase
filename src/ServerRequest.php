@@ -27,7 +27,7 @@ final class ServerRequest extends Request implements ServerRequestInterface
     private array $attributes = [];
 
     public function __construct(
-        UriInterface|string $resource = new URI("/"),
+        UriInterface|string $resource = new URI("/", false),
         HTTPVerb|string $method = HTTPVerb::GET,
         StreamInterface|\SplFileObject|string|null $body = new MessageBody(null),
         Headers $headers = new Headers(),
