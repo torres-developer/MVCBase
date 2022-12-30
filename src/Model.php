@@ -43,7 +43,7 @@ abstract class Model
 {
     use ConnectionHolder;
 
-    public final function __construct(?Connection $db)
+    final public function __construct(?Connection $db)
     {
         $this->db = $db;
     }

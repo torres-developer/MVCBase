@@ -111,7 +111,7 @@ class Request implements RequestInterface
         return $this->resource;
     }
 
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): static
     {
         $req = clone $this;
 
@@ -125,6 +125,8 @@ class Request implements RequestInterface
         }
 
         $req->resource = $uri;
+
+        return $req;
     }
 
     public function getMethodHTTPVerb(): HTTPVerb

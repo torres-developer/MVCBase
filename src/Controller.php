@@ -35,12 +35,12 @@ abstract class Controller
         $this->res = $res;
     }
 
-    public final function setDB(Connection $db): void
+    final public function setDB(Connection $db): void
     {
         $this->db = $db;
     }
 
-    public final function getResponse(): ResponseInterface
+    final public function getResponse(): ResponseInterface
     {
         return $this->res;
     }
