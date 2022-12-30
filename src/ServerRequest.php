@@ -40,6 +40,19 @@ final class ServerRequest extends Request implements ServerRequestInterface
         $this->findRoute($resource->getPath());
     }
 
+    public function withUri(UriInterface $uri, $preserveHost = false): static
+    {
+        // to cast to self
+        $req = (function () use ($uri, $preserveHost): self {
+                return parent::withUri($uri, $preserveHost);
+            }
+        )();
+
+        $req->findRoute($req->getUri()->getPath());
+
+        return $req;
+    }
+
     public function getServerParams(): array
     {
         return $this->serverParams;

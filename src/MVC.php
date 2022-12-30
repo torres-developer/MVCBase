@@ -86,8 +86,17 @@ final class MVC
         $controller = "$ns\\{$this->request->getController()}";
 
         if (!class_exists($controller)) {
-            http_response_code(404);
-            exit;
+            $uri = $this->request->getUri();
+            $this->request->withUri($uri->withPath(
+                "/" . HOMEPAGE . $uri->getPath()
+            ));
+
+            $controller = "$ns\\{$this->request->getController()}";
+
+            if (!class_exists($controller)) {
+                http_response_code(404);
+                exit;
+            }
         }
 
         $this->deploy($controller, new Response(200));

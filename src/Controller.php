@@ -10,7 +10,6 @@ namespace TorresDeveloper\MVC;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TorresDeveloper\PdoWrapperAPI\Core\AbstractQueryBuilder;
 use TorresDeveloper\PdoWrapperAPI\Core\Connection;
 
 /**
