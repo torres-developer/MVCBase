@@ -87,11 +87,10 @@ final class MVC
 
         if (!class_exists($controller)) {
             $uri = $this->request->getUri();
-            $this->request->withUri($uri->withPath(
-                "/" . HOMEPAGE . $uri->getPath()
-            ));
 
-            $controller = "$ns\\{$this->request->getController()}";
+            $controller = "$ns\\{$this->request->withUri($uri->withPath(
+                "/" . HOMEPAGE . $uri->getPath()
+            ))->getController()}";
 
             if (!class_exists($controller)) {
                 http_response_code(404);
