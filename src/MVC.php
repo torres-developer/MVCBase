@@ -98,7 +98,9 @@ final class MVC
             }
         }
 
-        $this->deploy($controller, new Response(200));
+        $response = $this->deploy($controller, new Response(200));
+
+        echo $response->getBody()->getContents() ?: null;
     }
 
     private function createRequest(): ServerRequest
