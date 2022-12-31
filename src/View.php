@@ -34,15 +34,18 @@ class View
 {
     private readonly ViewLoader $loader;
 
-    public function __construct(string $loader)
-    {
+    public function __construct(
+        string $loader,
+        string|iterable $paths = [],
+        ?string $cache = null
+    ) {
         if (!is_subclass_of($loader, ViewLoader::class)) {
             throw new \InvalidArgumentException(
                 "\$loader needs to extend " . ViewLoader::class
             );
         }
 
-        $this->loader = new $loader();
+        $this->loader = new $loader($paths, $cache);
     }
 
     public function getViewLoader(): ViewLoader

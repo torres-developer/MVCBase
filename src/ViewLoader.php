@@ -47,8 +47,8 @@ abstract class ViewLoader
     protected readonly ?string $cache;
 
     public final function __construct(
-        string|iterable $paths,
-        ?string $cache
+        string|iterable $paths = [],
+        ?string $cache = null
     ) {
         $this->templates = [];
 
