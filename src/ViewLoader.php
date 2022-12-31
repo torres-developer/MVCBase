@@ -43,7 +43,7 @@ use Psr\Http\Message\StreamInterface;
  */
 abstract class ViewLoader
 {
-    /** @var \Directory[] */
+    /** @var \DirectoryIterator[] */
     protected array $templates;
 
     protected ?string $cache;
@@ -84,21 +84,22 @@ abstract class ViewLoader
         iterable $data
     ): ?StreamInterface;
 
-    public final function addPath(string|\Directory|iterable $paths): void
-    {
+    public final function addPath(
+        string|\DirectoryIterator|iterable $paths
+    ): void {
         if (!is_iterable($paths)) {
             $paths = [$paths];
         }
 
         foreach ($paths as $path) {
-            if (!is_string($path) && !($path instanceof \Directory)) {
+            if (!is_string($path) && !($path instanceof \DirectoryIterator)) {
                 throw new \InvalidArgumentException(
                     "\$templates must be of type string or \Directory"
                 );
             }
 
-            if (is_string($path) && (($dir = dir($path)) === false)) {
-                throw new \RuntimeException("Unable to open dir: $path");
+            if (is_string($path)) {
+                $dir = new \DirectoryIterator($path);
             }
 
             $this->templates[] = $dir;
