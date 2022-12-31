@@ -15,8 +15,9 @@ final class MessageBody implements StreamInterface
     public function __construct(\SplFileObject|string|null $body)
     {
         if (is_string($body)) {
-            $body = (new \SplTempFileObject())->fwrite($body);
-            //$body = (new \SplFileObject("php://temp", "rw+"))->fwrite($body);
+            $body = new \SplTempFileObject();
+            //$body = new \SplFileObject("php://temp", "rw+");
+            $body->fwrite($body);
         }
 
         $this->body = $body;
