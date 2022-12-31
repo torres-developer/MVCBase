@@ -37,6 +37,15 @@ abstract class Controller
         $this->res = $res;
     }
 
+    final protected function load(string $template): void
+    {
+        if (!isset($this->viewLoader)) {
+            throw new \RuntimeException("No loader");
+        }
+
+        $this->res = $this->res->withBody($this->viewLoader->load($template));
+    }
+
     final public function setDB(Connection $db): void
     {
         $this->db = $db;
