@@ -49,7 +49,7 @@ abstract class ViewLoader
     public final function __construct(
         string|iterable $paths,
         ?string $cache
-    ): void {
+    ) {
         $this->templates = [];
 
         $this->addPath($paths);
