@@ -24,6 +24,8 @@ abstract class Controller
 {
     use ConnectionHolder;
 
+    protected readonly ViewLoader $viewLoader;
+
     protected readonly ServerRequestInterface $req;
     protected readonly ResponseInterface $res;
 
@@ -38,6 +40,11 @@ abstract class Controller
     final public function setDB(Connection $db): void
     {
         $this->db = $db;
+    }
+
+    final public function setViewLoader(ViewLoader $viewLoader): void
+    {
+        $this->viewLoader = $viewLoader;
     }
 
     final public function getResponse(): ResponseInterface

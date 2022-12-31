@@ -178,6 +178,20 @@ final class MVC
 
         $controller = new $controller($this->request, $response);
 
+        $loader = $class->getAttributes(View::class);
+
+        if ($methodLoader = $method->getAttributes(View::class)) {
+            $loader = $methodLoader;
+        }
+
+        $loader = $loader
+            ? array_pop($loader)->newInstance()->getViewLoader()
+            : null;
+
+        if ($loader) {
+            $controller->setViewLoader($loader);
+        }
+
         $db = $class->getAttributes(DB::class);
 
         if ($methodDB = $method->getAttributes(DB::class)) {
