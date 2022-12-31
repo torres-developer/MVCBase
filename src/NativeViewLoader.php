@@ -31,6 +31,8 @@ declare(strict_types=1);
 
 namespace TorresDeveloper\MVC;
 
+use Psr\Http\Message\StreamInterface;
+
 /**
  * NativeViewLoader
  *
@@ -45,7 +47,7 @@ class NativeViewLoader extends ViewLoader
         string $template,
         iterable $data = [],
         bool $cache = true
-    ): MessageBody {
+    ): StreamInterface {
         if ($cached = $this->findInCache($template, $data)) {
             return $cached;
         }
@@ -61,8 +63,6 @@ class NativeViewLoader extends ViewLoader
         }
 
         ob_start();
-
-        var_dump($templateFile);
 
         require $templateFile;
 
@@ -87,14 +87,16 @@ class NativeViewLoader extends ViewLoader
     }
 
     public function cache(
-        MessageBody $body,
+        StreamInterface $body,
         string $template,
         iterable $data
     ): void {
     }
 
-    public function findInCache(string $template, iterable $data): ?MessageBody
-    {
+    public function findInCache(
+        string $template,
+        iterable $data
+    ): ?StreamInterface {
         return null;
     }
 }

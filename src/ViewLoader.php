@@ -31,6 +31,8 @@ declare(strict_types=1);
 
 namespace TorresDeveloper\MVC;
 
+use Psr\Http\Message\StreamInterface;
+
 /**
  * ViewLoader
  *
@@ -67,12 +69,12 @@ abstract class ViewLoader
         string $template,
         iterable $data = [],
         bool $cache = true
-    ): MessageBody;
+    ): StreamInterface;
 
     public abstract function findTemplate(string $template): ?string;
 
     public abstract function cache(
-        MessageBody $body,
+        StreamInterface $body,
         string $template,
         iterable $data
     ): void;
@@ -80,7 +82,7 @@ abstract class ViewLoader
     public abstract function findInCache(
         string $template,
         iterable $data
-    ): ?MessageBody;
+    ): ?StreamInterface;
 
     public final function addPath(string|\Directory|iterable $paths): void
     {
