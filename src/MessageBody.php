@@ -15,12 +15,17 @@ final class MessageBody implements StreamInterface
     public function __construct(\SplFileObject|string|null $body)
     {
         if (is_string($body)) {
-            $body = new \SplTempFileObject();
-            //$body = new \SplFileObject("php://temp", "rw+");
-            $body->fwrite($body);
+            $text = $body;
+
+            $this->body = new \SplTempFileObject();
+            //$this->body = new \SplFileObject("php://temp", "rw+");
+
+            $this->write($text);
+        } else {
+            $this->body = $body;
         }
 
-        $this->body = $body;
+        $this->rewind();
     }
 
     public function __toString(): string
@@ -91,7 +96,7 @@ final class MessageBody implements StreamInterface
             throw new \InvalidArgumentException();
         }
 
-        if ($this->body->fseek($offset, $whence) === -1) {
+        if ($this->body && $this->body->fseek($offset, $whence) === -1) {
             throw new \RuntimeException();
         }
     }
@@ -148,8 +153,8 @@ final class MessageBody implements StreamInterface
         $this->rewind();
 
         $contents = "";
-        if (($size = $this->getSize()) > 0) {
-            $contents = $this->read($size);
+        while (!$this->eof()) {
+            $contents .= $this->read(64);
         }
 
         $this->seek($pos);
