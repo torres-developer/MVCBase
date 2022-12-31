@@ -36,7 +36,7 @@ class View
 
     public function __construct(
         string $loader,
-        string|iterable $paths = [],
+        string|iterable $paths = [TEMPLATES],
         ?string $cache = null
     ) {
         if (!is_subclass_of($loader, ViewLoader::class)) {
