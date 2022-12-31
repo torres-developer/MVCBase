@@ -24,8 +24,6 @@ final class MessageBody implements StreamInterface
         } else {
             $this->body = $body;
         }
-
-        $this->rewind();
     }
 
     public function __toString(): string
