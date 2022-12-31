@@ -51,7 +51,7 @@ abstract class Controller
             $overwrite
                 ? $this->viewLoader->load($template, $data, $cache)
                 : new MessageBody(
-                    $this->res->getBody()->getContents()
+                    (@$this->res->getBody()->getContents() ?? "")
                         . $this->viewLoader->load(
                             $template,
                             $data,
