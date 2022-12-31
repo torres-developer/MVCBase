@@ -27,7 +27,7 @@ abstract class Controller
     protected readonly ViewLoader $viewLoader;
 
     protected readonly ServerRequestInterface $req;
-    protected readonly ResponseInterface $res;
+    protected ResponseInterface $res;
 
     public function __construct(
         ServerRequestInterface $req,
