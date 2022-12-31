@@ -44,9 +44,9 @@ use Psr\Http\Message\StreamInterface;
 abstract class ViewLoader
 {
     /** @var \Directory[] */
-    protected readonly array $templates;
+    protected array $templates;
 
-    protected readonly ?string $cache;
+    protected ?string $cache;
 
     public final function __construct(
         string|iterable $paths = [],

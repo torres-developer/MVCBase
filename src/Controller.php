@@ -37,13 +37,28 @@ abstract class Controller
         $this->res = $res;
     }
 
-    final protected function load(string $template): void
-    {
+    final protected function load(
+        string $template,
+        iterable $data = [],
+        bool $cache = true,
+        bool $overwrite = false
+    ): void {
         if (!isset($this->viewLoader)) {
             throw new \RuntimeException("No loader");
         }
 
-        $this->res = $this->res->withBody($this->viewLoader->load($template));
+        $this->res = $this->res->withBody(
+            $overwrite
+                ? $this->viewLoader->load($template, $data, $cache)
+                : new MessageBody(
+                    $this->res->getBody()->getContents()
+                        . $this->viewLoader->load(
+                            $template,
+                            $data,
+                            $cache
+                        )->getContents()
+                )
+        );
     }
 
     final public function setDB(Connection $db): void
