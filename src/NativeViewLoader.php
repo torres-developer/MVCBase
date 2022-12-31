@@ -62,9 +62,17 @@ class NativeViewLoader extends ViewLoader
 
         ob_start();
 
+        var_dump($templateFile);
+
         require $templateFile;
 
-        $message = new MessageBody(ob_get_clean());
+        $buffer = ob_get_clean();
+
+        if ($buffer === false) {
+            throw new \RuntimeException("Could not generate a buffer");
+        }
+
+        $message = new MessageBody($buffer);
 
         if ($cache) {
             $this->cache($message, $template, $data);
