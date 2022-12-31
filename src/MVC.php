@@ -208,7 +208,9 @@ final class MVC
 
         try {
             $controller->{$action}(...$this->request->getParameters());
-        } catch (\Exception) {
+        } catch (\Exception $e) {
+            throw $e;
+
             http_response_code(500);
             exit(1);
         }
