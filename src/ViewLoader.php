@@ -71,7 +71,7 @@ abstract class ViewLoader
         bool $cache = true
     ): StreamInterface;
 
-    abstract public function render(string $template): string;
+    abstract public function render(string $template): void;
 
     abstract public function findTemplate(string $template): ?string;
 

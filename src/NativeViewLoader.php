@@ -81,7 +81,7 @@ class NativeViewLoader extends ViewLoader
         return $message;
     }
 
-    public function render(string $template): string
+    public function render(string $template): void
     {
         $templateFile = $this->findTemplate($template);
 
@@ -89,17 +89,7 @@ class NativeViewLoader extends ViewLoader
             throw new \RuntimeException("No template found");
         }
 
-        ob_start();
-
         require $templateFile;
-
-        $buffer = ob_get_clean();
-
-        if ($buffer === false) {
-            throw new \RuntimeException("Could not generate a buffer");
-        }
-
-        return $buffer;
     }
 
     public function findTemplate(string $template): ?string
