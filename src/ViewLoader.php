@@ -48,7 +48,7 @@ abstract class ViewLoader
 
     protected ?string $cache;
 
-    public final function __construct(
+    final public function __construct(
         string|iterable $paths = [],
         ?string $cache = null
     ) {
@@ -65,26 +65,28 @@ abstract class ViewLoader
     {
     }
 
-    public abstract function load(
+    abstract public function load(
         string $template,
         iterable $data = [],
         bool $cache = true
     ): StreamInterface;
 
-    public abstract function findTemplate(string $template): ?string;
+    abstract protected function render(string $template): string;
 
-    public abstract function cache(
+    abstract public function findTemplate(string $template): ?string;
+
+    abstract public function cache(
         StreamInterface $body,
         string $template,
         iterable $data
     ): void;
 
-    public abstract function findInCache(
+    abstract public function findInCache(
         string $template,
         iterable $data
     ): ?StreamInterface;
 
-    public final function addPath(
+    final public function addPath(
         string|\DirectoryIterator|iterable $paths
     ): void {
         if (!is_iterable($paths)) {
@@ -106,7 +108,7 @@ abstract class ViewLoader
         }
     }
 
-    public final function sortPaths(callable $test): void
+    final public function sortPaths(callable $test): void
     {
         $len = count($this->templates);
 

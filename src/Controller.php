@@ -51,19 +51,21 @@ abstract class Controller
 
         try {
             $cur = $this->res->getBody()->getContents();
-        } finally {
-            $this->res = $this->res->withBody(
-                $overwrite
-                    ? $this->viewLoader->load($template, $data, $cache)
-                    : new MessageBody(
-                        $cur . $this->viewLoader->load(
-                            $template,
-                            $data,
-                            $cache
-                        )->getContents()
-                    )
-            );
+        } catch (\Exception) {
+            $cur = "";
         }
+
+        $this->res = $this->res->withBody(
+            $overwrite
+                ? $this->viewLoader->load($template, $data, $cache)
+                : new MessageBody(
+                    $cur . $this->viewLoader->load(
+                        $template,
+                        $data,
+                        $cache
+                    )->getContents()
+                )
+        );
     }
 
     final public function setDB(Connection $db): void

@@ -143,7 +143,7 @@ final class MessageBody implements StreamInterface
     public function getContents(): string
     {
         if ($this->body === null) {
-            throw new \RuntimeException();
+            throw new \RuntimeException("No body");
         }
 
         $pos = $this->tell();
