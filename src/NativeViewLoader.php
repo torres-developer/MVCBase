@@ -56,8 +56,6 @@ class NativeViewLoader extends ViewLoader
             $$k = $v;
         }
 
-        $render = $this->render(...);
-
         $templateFile = $this->findTemplate($template);
 
         if ($templateFile === null) {
@@ -83,7 +81,7 @@ class NativeViewLoader extends ViewLoader
         return $message;
     }
 
-    protected function render(string $template): string
+    public function render(string $template): string
     {
         $templateFile = $this->findTemplate($template);
 
@@ -108,40 +106,41 @@ class NativeViewLoader extends ViewLoader
     {
         $template = trim($template, DIRECTORY_SEPARATOR);
 
-        function find(iterable $dirs, string $template): ?string
-        {
-            $newDirs = [];
+        return $this->find($this->templates, $template);
+    }
 
-            foreach ($dirs as $path) {
-                foreach ($path as $file) {
-                    $name = $file->getFilename();
-                    $pathName = $file->getPathname();
+    protected function find(iterable $dirs, string $template): ?string
+    {
+        $newDirs = [];
 
-                    if ($name === "." || $name === "..") {
-                        continue;
-                    }
+        foreach ($dirs as $path) {
+            foreach ($path as $file) {
+                $name = $file->getFilename();
+                $pathName = $file->getPathname();
 
-                    if ($file->isDir()) {
-                        $newDirs[] = new \DirectoryIterator($pathName);
-                        continue;
-                    }
+                if ($name === "." || $name === "..") {
+                    continue;
+                }
 
-                    if ($file->isFile() && $file->getExtension() === "php") {
-                        if (
-                            str_ends_with($pathName, $template)
-                            || str_ends_with($pathName, "$template.php")
-                        ) {
-                            return $pathName;
-                        }
+                if ($file->isDir()) {
+                    $newDirs[] = new \DirectoryIterator($pathName);
+                    continue;
+                }
+
+                if ($file->isFile() && $file->getExtension() === "php") {
+                    if (
+                        str_ends_with($pathName, $template)
+                        || str_ends_with($pathName, "$template.php")
+                    ) {
+                        return $pathName;
                     }
                 }
             }
-
-            return $newDirs ? find($newDirs, $template) : null;
         }
 
-        return find($this->templates, $template);
+        return $newDirs ? $this->find($newDirs, $template) : null;
     }
+
 
     public function cache(
         StreamInterface $body,
