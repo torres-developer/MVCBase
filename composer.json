@@ -32,7 +32,11 @@
     "autoload": {
         "psr-4": {
             "TorresDeveloper\\MVC\\": "src/"
-        }
+        },
+        "files": [
+            "src/consts.php",
+            "src/globalFunctions.php"
+        ]
     },
     "minimum-stability": "dev",
     "repositories": [
