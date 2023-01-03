@@ -31,6 +31,8 @@ declare(strict_types=1);
 
 namespace TorresDeveloper\MVC;
 
+use function TorresDeveloper\MVC\baseurl;
+
 use Psr\Http\Message\StreamInterface;
 
 /**
