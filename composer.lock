@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "987e533e6f05352500875f15e56d4e44",
+    "content-hash": "0708548c739eb152cea7da5fa1c12c00",
     "packages": [
         {
             "name": "pds/skeleton",
@@ -102,17 +102,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/torres-developer/PDOWrapperAPI.git",
-                "reference": "47ba4bbc7689cbe9493d5283c46ce6c6619ab377"
+                "reference": "1d1048ef34acb20b991b23a46949e2acd373c05a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/torres-developer/PDOWrapperAPI/zipball/47ba4bbc7689cbe9493d5283c46ce6c6619ab377",
-                "reference": "47ba4bbc7689cbe9493d5283c46ce6c6619ab377",
+                "url": "https://api.github.com/repos/torres-developer/PDOWrapperAPI/zipball/1d1048ef34acb20b991b23a46949e2acd373c05a",
+                "reference": "1d1048ef34acb20b991b23a46949e2acd373c05a",
                 "shasum": ""
             },
             "require": {
                 "ext-pdo": "*",
-                "php": ">=8.1.11"
+                "php": ">=8.1.13"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "dev-master",
@@ -163,7 +163,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.1.11"
+        "php": ">=8.1.13"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
