@@ -68,6 +68,11 @@ abstract class Controller
         );
     }
 
+    final protected function getVerb(): HTTPVerb
+    {
+        return HTTPVerb::from($this->req->getMethod());
+    }
+
     final public function setDB(Connection $db): void
     {
         $this->db = $db;
