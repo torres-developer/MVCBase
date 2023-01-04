@@ -31,7 +31,7 @@ namespace TorresDeveloper\MVC;
 
 defined("ROOT") or exit(1);
 
-function baseurl(string $path): string
+function baseurl(string $path = ""): string
 {
     return URI . rtrim($path, "/\//");
 }
