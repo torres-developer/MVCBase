@@ -108,7 +108,7 @@ final class MVC
         $headers = array_keys($response->getHeaders());
 
         foreach ($headers as $h) {
-            $response->getHeaderLine($h);
+            header($response->getHeaderLine($h));
         }
     }
 
