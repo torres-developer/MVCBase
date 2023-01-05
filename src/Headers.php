@@ -30,13 +30,7 @@ final class Headers
     {
         $name = mb_strtoupper($name);
 
-        //return $this->headers[$name] ?? null;
-
-        if (($header = $this->headers[$name]) === null) {
-            return null;
-        }
-
-        return $name . ": " . implode(", ", $header);
+        return $this->headers[$name] ?? null;
     }
 
     public function __isset(string $name): bool
