@@ -100,7 +100,15 @@ final class MVC
 
         $response = $this->deploy($controller, new Response(200));
 
-        echo $response->getBody()->getContents() ?: null;
+        try {
+            echo $response->getBody()->getContents() ?: null;
+        } finally {
+            $headers = array_keys($response->getHeaders());
+
+            foreach ($headers as $h) {
+                $response->getHeaderLine($h);
+            }
+        }
     }
 
     private function createRequest(): ServerRequest
