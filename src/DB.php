@@ -34,7 +34,7 @@ use TorresDeveloper\PdoWrapperAPI\Core\Connection;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
 class DB
 {
-    private readonly static array $credentials;
+    private static array $credentials;
 
     private readonly string $id;
 
@@ -51,6 +51,6 @@ class DB
 
         $db = static::$credentials[$this->id];
 
-        return new $db["class"]($db[$dsn]);
+        return new $db["class"]($db["dsn"]);
     }
 }
