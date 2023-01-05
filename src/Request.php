@@ -86,7 +86,7 @@ class Request implements RequestInterface
 
     public function getMethod(): string
     {
-        return (string) $this->method;
+        return $this->method->value;
     }
 
     public function withMethod($method): static
