@@ -89,7 +89,7 @@ final class MVC
             $uri = $this->request->getUri();
 
             $controller = "$ns\\{$this->request->withUri($uri->withPath(
-                "/" . HOMEPAGE . $uri->getPath()
+                "/" . HOMEPAGE .$uri->getPath()
             ))->getController()}";
 
             if (!class_exists($controller)) {
@@ -102,12 +102,13 @@ final class MVC
 
         try {
             echo $response->getBody()->getContents() ?: null;
-        } finally {
-            $headers = array_keys($response->getHeaders());
+        } catch (\RuntimeException) {
+        }
 
-            foreach ($headers as $h) {
-                $response->getHeaderLine($h);
-            }
+        $headers = array_keys($response->getHeaders());
+
+        foreach ($headers as $h) {
+            $response->getHeaderLine($h);
         }
     }
 
