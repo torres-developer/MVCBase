@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0708548c739eb152cea7da5fa1c12c00",
+    "content-hash": "d427fbe2e359e54eca921c435d7a20ee",
     "packages": [
         {
             "name": "pds/skeleton",
@@ -97,6 +97,57 @@
             "time": "2019-08-29T13:16:46+00:00"
         },
         {
+            "name": "torres-developer/http-message-impl",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/torres-developer/http-message-impl.git",
+                "reference": "3d5dbf45579f087896de88f770300e9787003292"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/torres-developer/http-message-impl/zipball/3d5dbf45579f087896de88f770300e9787003292",
+                "reference": "3d5dbf45579f087896de88f770300e9787003292",
+                "shasum": ""
+            },
+            "require": {
+                "pds/skeleton": "^1.0",
+                "php": ">=8.1.13",
+                "psr/http-message": "1.0.x-dev"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "TorresDeveloper\\HTTPMessage\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "AGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "torres-developer",
+                    "email": "torres.dev@disroot.org",
+                    "homepage": "https://github.com/torres-developer",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Implemantation of the psr-7",
+            "homepage": "https://github.com/torres-developer/http-message-impl",
+            "keywords": [
+                "implemantation",
+                "psr",
+                "psr-7"
+            ],
+            "support": {
+                "issues": "https://github.com/torres-developer/http-message-impl/issues",
+                "source": "https://github.com/torres-developer/http-message-impl/"
+            },
+            "time": "2023-01-07T00:00:00+00:00"
+        },
+        {
             "name": "torres-developer/pdo",
             "version": "dev-master",
             "source": {
@@ -151,6 +202,58 @@
                 "source": "https://github.com/torres-developer/PDOWrapperAPI/"
             },
             "time": "2022-10-16T00:00:00+00:00"
+        },
+        {
+            "name": "torres-developer/pull",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/torres-developer/php-pull.git",
+                "reference": "7540f7e5a4cf80534adfe87a3dc8139934790c22"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/torres-developer/php-pull/zipball/7540f7e5a4cf80534adfe87a3dc8139934790c22",
+                "reference": "7540f7e5a4cf80534adfe87a3dc8139934790c22",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "pds/skeleton": "^1.0",
+                "php": ">=8.1.13",
+                "torres-developer/http-message-impl": "dev-master"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "TorresDeveloper\\Pull\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "torres-developer",
+                    "email": "torres.dev@disroot.org",
+                    "homepage": "https://github.com/torres-developer",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An PHP cURL extension wrapper",
+            "homepage": "https://github.com/torres-developer/php-pull",
+            "keywords": [
+                "curl",
+                "fiber",
+                "libcurl"
+            ],
+            "support": {
+                "issues": "https://github.com/torres-developer/php-pull/issues",
+                "source": "https://github.com/torres-developer/php-pull/"
+            },
+            "time": "2023-01-07T00:00:00+00:00"
         }
     ],
     "packages-dev": [],
@@ -158,7 +261,9 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "torres-developer/pdo": 20,
-        "psr/http-message": 20
+        "psr/http-message": 20,
+        "torres-developer/pull": 20,
+        "torres-developer/http-message-impl": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -10,6 +10,8 @@ namespace TorresDeveloper\MVC;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TorresDeveloper\HTTPMessage\Stream;
+use TorresDeveloper\HTTPMessage\HTTPVerb;
 use TorresDeveloper\PdoWrapperAPI\Core\Connection;
 
 /**
@@ -58,7 +60,7 @@ abstract class Controller
         $this->res = $this->res->withBody(
             $overwrite
                 ? $this->viewLoader->load($template, $data, $cache)
-                : new MessageBody(
+                : new Stream(
                     $cur . $this->viewLoader->load(
                         $template,
                         $data,

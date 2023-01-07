@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace TorresDeveloper\MVC;
 
+use DirectoryIterator;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -125,7 +126,7 @@ abstract class ViewLoader
             $len = $newLen;
         } while ($len > 1);
 
-        function swap(string &$x, string &$y): void
+        function swap(DirectoryIterator &$x, DirectoryIterator &$y): void
         {
             $temp = $x;
             $x = $y;

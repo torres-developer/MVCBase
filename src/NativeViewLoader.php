@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace TorresDeveloper\MVC;
 
 use Psr\Http\Message\StreamInterface;
+use TorresDeveloper\HTTPMessage\Stream;
 
 /**
  * NativeViewLoader
@@ -72,7 +73,7 @@ class NativeViewLoader extends ViewLoader
             throw new \RuntimeException("Could not generate a buffer");
         }
 
-        $message = new MessageBody($buffer);
+        $message = new Stream($buffer);
 
         if ($cache) {
             $this->cache($message, $template, $data);

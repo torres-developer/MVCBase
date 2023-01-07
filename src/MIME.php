@@ -6,6 +6,9 @@
 
 namespace TorresDeveloper\MVC;
 
+use TorresDeveloper\HTTPMessage\HTTPVerb;
+use TorresDeveloper\HTTPMessage\Stream;
+
 final class MIME
 {
     private function __construct()
@@ -13,12 +16,12 @@ final class MIME
     }
 
     public static function parseFromMIME(
-        MessageBody $body,
+        Stream $body,
         string $mime,
         HTTPVerb $method
     ): array|object|null {
         $content = $body->getContents();
-        $body = new MessageBody($content);
+        $body = new Stream($content);
         $parsedBody = null;
 
         switch ($mime) {
@@ -37,7 +40,7 @@ final class MIME
 
                 break;
             case "text/csv":
-                $file = (new MessageBody($content))
+                $file = (new Stream($content))
                     ->detach();
 
                 $parsedBody = [];
@@ -46,7 +49,7 @@ final class MIME
                     $parsedBody[] = $file->fgetcsv();
                 }
             case "text/tab-separeted-values":
-                $file = (new MessageBody($content))
+                $file = (new Stream($content))
                     ->detach();
 
                 $parsedBody = [];

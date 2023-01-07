@@ -31,6 +31,14 @@ declare(strict_types=1);
 
 namespace TorresDeveloper\MVC;
 
+use TorresDeveloper\HTTPMessage\Headers;
+use TorresDeveloper\HTTPMessage\HTTPVerb;
+use TorresDeveloper\HTTPMessage\Response;
+use TorresDeveloper\HTTPMessage\ServerRequest;
+use TorresDeveloper\HTTPMessage\Stream;
+use TorresDeveloper\HTTPMessage\UploadedFile;
+use TorresDeveloper\HTTPMessage\URI;
+
 /**
  * The basic system for the MVC.
  *
@@ -120,7 +128,7 @@ final class MVC
 
         $method = HTTPVerb::from($_SERVER["REQUEST_METHOD"]);
 
-        $body = new MessageBody(new \SplFileObject("php://input"));
+        $body = new Stream(new \SplFileObject("php://input"));
 
         $serverParams = [
             "REMOTE_ADDR" => $_SERVER["REMOTE_ADDR"] ?? null,
@@ -141,11 +149,12 @@ final class MVC
             $method,
             $body,
             $this->createHeaders(),
+            $_SERVER["SERVER_PROTOCOL"],
             $serverParams
         );
 
         $req = $req->withCookieParams($_COOKIE)
-            ->withUploadedFiles(array_map(File::from_FILES(...), $_FILES));
+            ->withUploadedFiles(array_map(UploadedFile::from_FILES(...), $_FILES));
 
         if ($body->getContents()) {
             $req = $req->withParsedBody(MIME::parseFromMIME(

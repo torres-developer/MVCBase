@@ -4,8 +4,8 @@
     "description": "MVC base framework",
     "type": "library",
     "keywords": [
-	    "MVC",
-	    "framework"
+        "MVC",
+        "framework"
     ],
     "homepage": "https://github.com/torres-developer/MVCBase",
     "readme": "./README.md",
@@ -15,19 +15,21 @@
         {
             "name": "torres-developer",
             "email": "torres.dev@disroot.org",
-	    "homepage": "https://github.com/torres-developer",
-	    "role": "Developer"
+            "homepage": "https://github.com/torres-developer",
+            "role": "Developer"
         }
     ],
     "support": {
-	"issues": "https://github.com/torres-developer/MVCBase/issues",
-	"source": "https://github.com/torres-developer/MVCBase/"
+        "issues": "https://github.com/torres-developer/MVCBase/issues",
+        "source": "https://github.com/torres-developer/MVCBase/"
     },
     "require": {
-	"php": ">=8.1.13",
-	"torres-developer/pdo": "dev-master",
+        "php": ">=8.1.13",
+        "torres-developer/pdo": "dev-master",
         "pds/skeleton": "^1.0",
-        "psr/http-message": "1.0.x-dev"
+        "psr/http-message": "1.0.x-dev",
+        "torres-developer/pull": "dev-master",
+        "torres-developer/http-message-impl": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -40,10 +42,12 @@
     },
     "minimum-stability": "dev",
     "repositories": [
-	{
-	    "type": "vcs",
-	    "url": "https://github.com/torres-developer/MVCBase"
-	}
+        {
+            "type": "vcs",
+            "url": "https://github.com/torres-developer/MVCBase"
+        }
     ],
-    "bin": ["bin/genBase"]
+    "bin": [
+        "bin/genBase"
+    ]
 }
