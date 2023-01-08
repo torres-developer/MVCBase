@@ -118,6 +118,8 @@ final class MVC
         foreach ($headers as $h) {
             header($response->getHeaderLine($h));
         }
+
+        http_response_code($response->getStatusCode());
     }
 
     private function createRequest(): ServerRequest
