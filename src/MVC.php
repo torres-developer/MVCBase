@@ -156,7 +156,15 @@ final class MVC
         $req = $req->withCookieParams($_COOKIE)
             ->withUploadedFiles(array_map(UploadedFile::from_FILES(...), $_FILES));
 
-        if ($body->getContents()) {
+        $contents = null;
+
+        try {
+            $contents = $body->getContents();
+        } catch (\Throwable) {
+            $contents = "";
+        }
+
+        if ($contents) {
             $req = $req->withParsedBody(MIME::parseFromMIME(
                 $body,
                 $_SERVER["HTTP_CONTENT_TYPE"] ?? "",
