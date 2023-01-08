@@ -102,12 +102,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/torres-developer/http-message-impl.git",
-                "reference": "3d5dbf45579f087896de88f770300e9787003292"
+                "reference": "0e522937833afbb7d62133d4a7efc4647f086272"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/torres-developer/http-message-impl/zipball/3d5dbf45579f087896de88f770300e9787003292",
-                "reference": "3d5dbf45579f087896de88f770300e9787003292",
+                "url": "https://api.github.com/repos/torres-developer/http-message-impl/zipball/0e522937833afbb7d62133d4a7efc4647f086272",
+                "reference": "0e522937833afbb7d62133d4a7efc4647f086272",
                 "shasum": ""
             },
             "require": {
